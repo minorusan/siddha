@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 
-class AnimateSpriteSheet : MonoBehaviour
+public class AnimateSpriteSheet : MonoBehaviour
 {
     private Renderer _renderer;
     public int Columns = 5;

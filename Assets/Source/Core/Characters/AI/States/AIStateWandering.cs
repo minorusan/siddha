@@ -69,7 +69,7 @@ namespace Core.Characters.AI
 
 		public override void OnLeave()
 		{
-			AudioSource.PlayClipAtPoint(_bellCreepy, Vector3.zero, 0.5f);
+
 			_masterBrain.MovableObject.MovementSpeed = _previousMoveSpeed;
 		}
 

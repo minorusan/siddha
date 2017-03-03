@@ -16,7 +16,7 @@ namespace Core.Map
 		private Path _currentPath = new Path ();
 		private EMovableObjectState _currentState = EMovableObjectState.Standing;
 	
-		private Animator _animator;
+		private AnimateSpriteSheet _animator;
 
 		#endregion
 
@@ -42,7 +42,7 @@ namespace Core.Map
 			}
 		}
 
-		public Animator SelfAnimator
+		public AnimateSpriteSheet SelfAnimator
 		{
 			get
 			{
@@ -56,7 +56,7 @@ namespace Core.Map
 
 		private void Awake ()
 		{
-			_animator = GetComponentInChildren<Animator> ();
+			_animator = GetComponentInChildren<AnimateSpriteSheet> ();
 		}
 
 		private void LateUpdate ()
@@ -100,7 +100,7 @@ namespace Core.Map
         public void BeginMovementByPath (Path path)
 		{
 			_currentPath.Nodes.Clear ();
-            SelfAnimator.SetFloat("AnimSpeed", MovementSpeed * 100);
+            
 			_currentPath = path;
 			ToggleAnimationState (EMovableObjectState.Walking);
 		}
@@ -157,13 +157,13 @@ namespace Core.Map
 			{
 			case EMovableObjectState.Standing:
 				{
-					SelfAnimator.SetBool ("Walk", false);
+                     SelfAnimator.enabled = false;
 					_currentState = EMovableObjectState.Standing;
 					break;
 				}
 			case EMovableObjectState.Walking:
 				{
-					SelfAnimator.SetBool ("Walk", true);
+                    SelfAnimator.enabled = true;
 					_currentState = EMovableObjectState.Walking;
 					break;
 				}
