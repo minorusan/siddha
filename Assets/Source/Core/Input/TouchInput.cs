@@ -34,9 +34,10 @@ namespace Core.Input
             {
                 Vector2 screenCoords;
 #if UNITY_EDITOR
+               
                 screenCoords = UnityEngine.Input.mousePosition;
 #else
-                screenCoords = UnityEngine.Input.touches[0].position;
+                screenCoords = UnityEngine.Input.touches[UnityEngine.Input.touches.Length-1].position;
 #endif
                 TouchPosition = Camera.main.ScreenToWorldPoint(screenCoords);
             }

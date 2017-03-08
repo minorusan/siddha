@@ -1,7 +1,4 @@
 ﻿using Core.Characters.Player;
-using Core.Gameplay.Interactivity;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Core.Gameplay.Interactivity

@@ -14,7 +14,7 @@ namespace Utils
         #endregion
 
         public float TransitionSpeed;
-        public bool ModifiesZ = true;
+        public bool Instant = true;
 
         private void OnEnable()
         {
@@ -27,8 +27,8 @@ namespace Utils
                                         _player.transform.position.y,
                                         transform.position.z);
 
-
-            transform.position = Vector3.MoveTowards(transform.position, _destination, TransitionSpeed * Time.deltaTime);
+            
+            transform.position = Instant ? _destination : Vector3.MoveTowards(transform.position, _destination, TransitionSpeed * Time.deltaTime);
         }
     }
 }

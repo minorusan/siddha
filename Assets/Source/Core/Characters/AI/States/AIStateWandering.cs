@@ -69,7 +69,6 @@ namespace Core.Characters.AI
 
 		public override void OnLeave()
 		{
-
 			_masterBrain.MovableObject.MovementSpeed = _previousMoveSpeed;
 		}
 

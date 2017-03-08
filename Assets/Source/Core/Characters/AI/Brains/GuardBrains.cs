@@ -48,24 +48,24 @@ namespace Core.Interactivity.AI
 
 		private void OnDrawGizmos()
 		{
-			var color = Color.white;
-			var radius = SearchDistance;
-			#if !UNITY_EDITOR
-            if (_currentState != null && _currentState.State == EAIState.Wandering)
-            {
-            color = Color.green;
-            }
-            else
-            {
-            color = Color.yellow;
-            radius = SearchDistance * 2f;
-            }
-			#endif
+			//var color = Color.white;
+			//var radius = SearchDistance;
+			//#if !UNITY_EDITOR
+   //         if (_currentState != null && _currentState.State == EAIState.Wandering)
+   //         {
+   //         color = Color.green;
+   //         }
+   //         else
+   //         {
+   //         color = Color.yellow;
+   //         radius = SearchDistance * 2f;
+   //         }
+			//#endif
             
-			Gizmos.color = color;
-			Gizmos.DrawWireSphere(transform.position, radius);
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, ActiveDistance);
+			//Gizmos.color = color;
+			//Gizmos.DrawWireSphere(transform.position, radius);
+   //         Gizmos.color = Color.red;
+   //         Gizmos.DrawWireSphere(transform.position, ActiveDistance);
         }
 
 		#region ArtificialIntelligence

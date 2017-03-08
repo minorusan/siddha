@@ -40,11 +40,26 @@
 				}
 			}
 		}
-		
-		/// <summary>
-		/// SIngle Vert
-		/// </summary>
-		internal class Vert
+
+        private void OnEnable()
+        {
+            if (_selfRenderer == null)
+            {
+                _selfRenderer = GetComponent<MeshRenderer>();
+            }
+            _selfRenderer.enabled = true;
+        }
+
+        private void OnDisable()
+        {
+           
+            _selfRenderer.enabled = false;
+        }
+
+        /// <summary>
+        /// SIngle Vert
+        /// </summary>
+        internal class Vert
 		{
 			public float angle; //comparable 
 			public int location; // 1= left end point    0= middle     -1=right endpoint
@@ -734,13 +749,13 @@
 		/// </summary>
 		public void Rebuild () {
 			
-			MeshRenderer renderer = GetComponent<MeshRenderer>();
-			if (renderer==null){
-				renderer = gameObject.AddComponent(typeof(MeshRenderer)) as MeshRenderer;    // Add a Mesh Renderer component to the light game object so the form can become visible
+			
+			if (_selfRenderer==null){
+                _selfRenderer = gameObject.AddComponent(typeof(MeshRenderer)) as MeshRenderer;    // Add a Mesh Renderer component to the light game object so the form can become visible
 			}
-			renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-			renderer.receiveShadows = false;
-			renderer.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;  
+            _selfRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            _selfRenderer.receiveShadows = false;
+            _selfRenderer.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;  
 			//renderer.sortingLayerName = "Default";
 			
 			//--mesh filter--//
@@ -1988,6 +2003,7 @@
 		private Vector2[] _uvs;
 		private Vector3[] _normals;
 		private Color32[] _colors;
+        private MeshRenderer _selfRenderer;
 		private int[] _triangles;
 		
 		/// <summary>
@@ -2075,9 +2091,9 @@
 			
 			if(recalculateNormals == true)
 				_lightMesh.RecalculateNormals();
-			
-			
-			GetComponent<Renderer>().sharedMaterial = LightMaterial;
+
+         
+			_selfRenderer.sharedMaterial = LightMaterial;
 			
 		}
 		

@@ -5,7 +5,7 @@ using Core.Characters.Player;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
+using UnityStandardAssets.ImageEffects;
 
 public class Inhale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
@@ -16,6 +16,9 @@ public class Inhale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         Exhaling,
         Exhaled
     }
+
+    private MotionBlur _blur;
+    private NoiseAndGrain _noise;
 
     private AudioSource _source;
     private Color _from;
@@ -43,6 +46,10 @@ public class Inhale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     void Start()
     {
         Status.gameObject.SetActive(false);
+        _blur = FindObjectOfType<MotionBlur>();
+        _noise = FindObjectOfType<NoiseAndGrain>();
+        _noise.enabled = false;
+
         _blowImage = transform.GetChild(0).GetComponent<Image>();
         _selfImage = GetComponent<Image>();
         PenaltyTime = GaspSound.length;
@@ -71,6 +78,9 @@ public class Inhale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                                 _originalCameraSize * 0.5f, ref _velocity, MaxInhaleTime);
                         }
                         Status.color = Color.Lerp(Color.green, Color.red, Status.fillAmount);
+
+                        _noise.intensityMultiplier = Mathf.Lerp(0f, 10.0f, Status.fillAmount);
+                        _blur.blurAmount = Mathf.Lerp(0.12f, 0.6f, Status.fillAmount);
                     }
                     else
                     {
@@ -80,7 +90,6 @@ public class Inhale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                         _shouldCancelPenalty = false;
                       
                         AudioSource.PlayClipAtPoint(GaspSound, Camera.main.transform.position, 1f);
-                       
                     }
                     break;
                 }
@@ -103,9 +112,11 @@ public class Inhale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             _selfImage.fillAmount = 1f - _penalty / PenaltyTime;
             _blowImage.color = new Color(1f, 1f, 1f, _selfImage.fillAmount);
             _source.volume = _penalty / PenaltyTime;
-
+            _noise.intensityMultiplier = Mathf.Lerp(10.0f, 0f, _selfImage.fillAmount);
+            _blur.blurAmount = Mathf.Lerp(0.6f, 0.12f, _selfImage.fillAmount);
             if (_penalty <= 0f)
             {
+                _noise.enabled = false;
                 _source.Stop();
             }
         }
@@ -115,6 +126,7 @@ public class Inhale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         if (_state == EInhaleStatus.None && _penalty <= 0f)
         {
+            _noise.enabled = true;
             _source.Play();
             _shouldCancelPenalty = true;
             AudioSource.PlayClipAtPoint(InhaleSound, Camera.main.transform.position, 0.2f);
@@ -136,6 +148,7 @@ public class Inhale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         AudioSource.PlayClipAtPoint(ExhaleSound, Camera.main.transform.position, Status.fillAmount);
         PlayerBehaviour.CurrentPlayer.Noise = Status.fillAmount / 2f;
         PlayerQuirks.StoppedBreathing = false;
+        
         if (_shouldCancelPenalty)
         {
             _penalty = _timePassed * 0.3f;
@@ -154,7 +167,6 @@ public class Inhale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 PlayerBehaviour.CurrentPlayer.Noise = Status.fillAmount;
             }
 
-           
             for (int i = 0; i < Cameras.Length; i++)
             {
                 Cameras[i].orthographicSize = Mathf.SmoothDamp(Cameras[i].orthographicSize,
@@ -163,6 +175,7 @@ public class Inhale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             yield return new WaitForEndOfFrame();
 
         }
+       
         if (_penalty <= 0f)
         {
             _source.Stop();
