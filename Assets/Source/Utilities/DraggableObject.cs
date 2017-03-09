@@ -19,6 +19,7 @@ namespace Core.Gameplay.Interactivity
         private ActionBase _undragActionBase;
         private Rigidbody2D _selfRigidbody2D;
         private HingeJoint2D _joint;
+        private DistanceJoint2D _distanceJoint;
         public EDragState State = EDragState.Idle;
 
         #endregion
@@ -36,9 +37,18 @@ namespace Core.Gameplay.Interactivity
             get { return _joint; }
         }
 
+        public DistanceJoint2D DistanceJoint
+        {
+            get
+            {
+                return _distanceJoint;
+            }
+        }
+
         void Start()
         {
             _joint = GetComponent<HingeJoint2D>();
+            _distanceJoint = GetComponent<DistanceJoint2D>();
             _selfRigidbody2D = GetComponent<Rigidbody2D>();
             _selfRigidbody2D.isKinematic = true;
             _dragActionBase = ActionsInitialiser.GetActionByID("action.id.drag");

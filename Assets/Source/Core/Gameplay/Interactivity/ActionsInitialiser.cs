@@ -47,7 +47,7 @@ namespace Core.Gameplay.Interactivity
 
             ActionRequirement openActionRequirement = (GameObject owner) =>
             {
-                return PlayerInventory.Instance.GetItems().Any(i => i.ItemID == "genericitem.id.rope") && !PlayerQuirks.Drags;
+                return true;//PlayerInventory.Instance.GetItems().Any(i => i.ItemID == "genericitem.id.rope") && !PlayerQuirks.Drags;
             };
             InteractiveAction action = (GameObject obj) =>
             {
@@ -81,9 +81,10 @@ namespace Core.Gameplay.Interactivity
 
         private static void InitContainerAction()
         {
-
+            var audioScavange = Resources.Load<AudioClip>("Sounds/scavange");
             InteractiveAction action = (GameObject obj) =>
             {
+                AudioSource.PlayClipAtPoint(audioScavange, Camera.main.transform.position);
                 ProcessBarController.StartProcessWithCompletion(3f * PlayerQuirks.GetSkill(EPlayerSkills.Scavanging),
                     Resources.Load<Sprite>("Sprites/Actions/action.id.container"), () =>
                                                                  {

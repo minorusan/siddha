@@ -24,23 +24,38 @@ namespace Core.Input
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            _state = ETouchState.Idle;
-            TouchPosition = Vector3.zero;
+#if UNITY_EDITOR
+            HandleCancelTouch();
+#endif
         }
 
         void Update()
         {
+#if !UNITY_EDITOR
+                 HandleCancelTouch();
+#endif
             if (_state == ETouchState.Pressed)
             {
                 Vector2 screenCoords;
 #if UNITY_EDITOR
-               
+
                 screenCoords = UnityEngine.Input.mousePosition;
 #else
                 screenCoords = UnityEngine.Input.touches[UnityEngine.Input.touches.Length-1].position;
 #endif
                 TouchPosition = Camera.main.ScreenToWorldPoint(screenCoords);
             }
+        }
+
+        private void HandleCancelTouch()
+        {
+#if UNITY_ANDROID
+            if (UnityEngine.Input.touches.Length <= 0)
+            {
+                _state = ETouchState.Idle;
+                TouchPosition = Vector3.zero;
+            }
+#endif
         }
     }
 

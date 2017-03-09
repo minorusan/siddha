@@ -2,6 +2,7 @@
 using Core.Characters.Player.Demand;
 using DynamicLight2D;
 using Core.Input;
+using System.Collections;
 
 namespace Core.Characters.Player
 {
@@ -53,7 +54,7 @@ namespace Core.Characters.Player
         public void Step()
         {
             Noise += (float)_stress.DemandState / 100;
-            AudioSource.PlayClipAtPoint(StepSound, transform.position, Noise);
+            AudioSource.PlayClipAtPoint(StepSound, transform.position, 0.3f);
         }
 
         private void Awake()
@@ -63,6 +64,7 @@ namespace Core.Characters.Player
             BaseMovementSpeed = MovementSpeed;
             Debug.LogWarning("Tutorial::Removing player prefs!");
             PlayerPrefs.DeleteAll();
+            StartCoroutine(MakeSound());
         }
 
         private void Start()
@@ -110,6 +112,18 @@ namespace Core.Characters.Player
         public void TurnOnLight(bool b)
         {
             _light.gameObject.SetActive(b);
+        }
+
+        private IEnumerator MakeSound()
+        {
+            while (true)
+            {
+                if (Moves)
+                {
+                    Step();
+                }
+                yield return new WaitForSeconds(0.5f);
+            }
         }
     }
 }

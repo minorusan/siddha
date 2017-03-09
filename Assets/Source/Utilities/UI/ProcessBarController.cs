@@ -81,13 +81,14 @@ namespace Core.Utilities
 
 		private void UpdateProcess ()
 		{
-			if (TouchInput.TouchPosition == Vector2.zero)
+#if !UNITY_EDITOR
+             if (TouchInput.TouchPosition != Vector2.zero)
 			{
 				_currentState = EProcessControllerState.Idle;
 				gameObject.SetActive (false);
 			}
-
-			if (_timePassed < _requiredTime)
+#endif
+            if (_timePassed < _requiredTime)
 			{
 				_timePassed += Time.deltaTime;
 				_progressBar.fillAmount = _timePassed / _requiredTime;

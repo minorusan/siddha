@@ -47,7 +47,11 @@ namespace Core.Inventory
 
                 //ShowDialogueForItem(item);
                 AudioSource.PlayClipAtPoint(_sound, Camera.main.transform.position, 0.01f);
-				InventoryChanged();
+                if (InventoryChanged != null)
+                {
+                    InventoryChanged();
+                }
+				
 				return true;
 			}
 			return false;

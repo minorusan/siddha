@@ -9,6 +9,7 @@ namespace Core.Map
     public class Roof : MonoBehaviour
     {
         private Renderer[] _renderers;
+        private AudioClip _enter;
         private DynamicLight[] _lights;
         private Renderer _selfRenderer;
         private Canvas[] _canvases;
@@ -21,6 +22,7 @@ namespace Core.Map
 
         private void Start()
         {
+            _enter = Resources.Load<AudioClip>("Sounds/windowShowFX");
             _dayNight = FindObjectOfType<DayNight>();
             _selfRenderer = GetComponent<Renderer>();
             
@@ -41,6 +43,7 @@ namespace Core.Map
         {
             if (collision.tag == "Player")
             {
+                AudioSource.PlayClipAtPoint(_enter, collision.transform.position);
                 foreach (var dynamicLight in _lights)
                 {
                     dynamicLight.enabled = true;
@@ -70,7 +73,6 @@ namespace Core.Map
                 {
                     dynamicLight.enabled = false;
                 }
-
              
                 _selfRenderer.enabled = true;
             }

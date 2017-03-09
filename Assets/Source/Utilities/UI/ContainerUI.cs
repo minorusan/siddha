@@ -12,6 +12,8 @@ namespace UI
         private Container _current;
         private Transform _bar;
 
+        public AudioClip Sound;
+
         public ContainerItem Prefab;
 
         private void Awake()
@@ -21,12 +23,17 @@ namespace UI
             gameObject.SetActive(false);
         }
 
+        private void OnEnable()
+        {
+            PlaySound();
+        }
+
         public static void ShowForContainer(Container cont)
         {
             var items = cont.Items;
             _instance.gameObject.SetActive(true);
             _instance.ShowForItems(cont);
-            _instance.transform.position = new Vector3(cont.transform.position.x, cont.transform.position.y + 2f, cont.transform.position.z);
+            _instance.transform.position = new Vector3(cont.transform.position.x, cont.transform.position.y + 1f, cont.transform.position.z);
         }
 
         private void ShowForItems(Container cont)
@@ -65,6 +72,11 @@ namespace UI
             {
                 gameObject.SetActive(false);
             }
+        }
+
+        public void PlaySound()
+        {
+            AudioSource.PlayClipAtPoint(Sound, Camera.main.transform.position);
         }
     }
 
