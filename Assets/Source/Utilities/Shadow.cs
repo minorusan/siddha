@@ -2,15 +2,15 @@
 using UnityEngine;
 
 namespace Utils
-{ 
+{
     public class Shadow : MonoBehaviour
     {
         private void OnTriggerEnter2D(Collider2D trigger)
         {
             if (trigger.tag == PlayerBehaviour.kPlayerTag)
             {
-                var color = PlayerBehaviour.CurrentPlayer.Renderer.color;
-                PlayerBehaviour.CurrentPlayer.Renderer.color = new Color(color.r, color.g, color.b, 0.3f);
+                var material = PlayerBehaviour.CurrentPlayer.Renderer.material;
+                material.color = new Color(0.4f, 0.4f, 0.4f, 1f);
                 PlayerQuirks.Shadowed = !PlayerQuirks.Attacked; ;
             }
         }
@@ -20,8 +20,8 @@ namespace Utils
             if (trigger.tag == PlayerBehaviour.kPlayerTag)
             {
                 PlayerQuirks.Shadowed = !PlayerBehaviour.CurrentPlayer.Moves && !PlayerQuirks.Attacked;
-                var color = PlayerBehaviour.CurrentPlayer.Renderer.color;
-                PlayerBehaviour.CurrentPlayer.Renderer.color = new Color(color.r, color.g, color.b, 0.3f);
+                var material = PlayerBehaviour.CurrentPlayer.Renderer.material;
+                material.color = new Color(0.4f, 0.4f, 0.4f, 1f);
             }
         }
 
@@ -29,8 +29,8 @@ namespace Utils
         {
             if (trigger.tag == PlayerBehaviour.kPlayerTag)
             {
-                var color = PlayerBehaviour.CurrentPlayer.Renderer.color;
-                PlayerBehaviour.CurrentPlayer.Renderer.color = new Color(color.r, color.g, color.b, 1f);
+                var material = PlayerBehaviour.CurrentPlayer.Renderer.material;
+                material.color = new Color(1f, 1f, 1f, 1f);
                 PlayerQuirks.Shadowed = false;
             }
         }

@@ -16,7 +16,7 @@ namespace Core.Characters.Player
         private DynamicLight _light;
         #region Private
         private AnimateSpriteSheet _animator;
-        private SpriteRenderer _renderer;
+        private Renderer _renderer;
         private static PlayerBehaviour _player;
         private StressAffector _stress;
         private DeathController _death;
@@ -27,9 +27,9 @@ namespace Core.Characters.Player
         public float MovementSpeed;
         public float Noise;
 
-        public SpriteRenderer Renderer
+        public Renderer Renderer
         {
-            get { return _renderer ?? (_renderer = GetComponentInChildren<SpriteRenderer>()); }
+            get { return _renderer ?? (_renderer = GetComponentInChildren<Renderer>()); }
         }
 
         public static PlayerBehaviour CurrentPlayer
