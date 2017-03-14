@@ -76,6 +76,10 @@ namespace Core.Characters.AI
 			if(IsPlayerReachable())
 			{
 				MoveToPlayer();
+                if (_masterBrain.MovableObject.CurrentPathLength < 1)
+                {
+                    PlayerBehaviour.CurrentPlayer.Kill();
+                }
 			}
 			else
 			{
@@ -94,6 +98,7 @@ namespace Core.Characters.AI
 		        suitableAttackPosition =
 		            MapController.GetNeighbours(suitableAttackPosition).First(i => i.CurrentCellType == ECellType.Walkable);
 		    } 
+
 			_masterBrain.MovableObject.BeginMovementByPath(Pathfinder.FindPathToDestination(
 				_map,
 				_masterBrain.MovableObject.CurrentNode.Position,

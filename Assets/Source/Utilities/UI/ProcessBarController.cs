@@ -2,6 +2,7 @@
 using System;
 using UnityEngine.UI;
 using Core.Input;
+using Core.Characters.Player;
 
 namespace Core.Utilities
 {
@@ -88,6 +89,11 @@ namespace Core.Utilities
 				gameObject.SetActive (false);
 			}
 #endif
+            if (PlayerBehaviour.CurrentPlayer.Moves)
+            {
+                Deactivate();
+            }
+
             if (_timePassed < _requiredTime)
 			{
 				_timePassed += Time.deltaTime;
@@ -95,11 +101,16 @@ namespace Core.Utilities
 			}
 			else
 			{
-				_currentState = EProcessControllerState.Idle;
-				gameObject.SetActive (false);
+                Deactivate();
 				_completion ();
 			}
 		}
-	}
+
+        private void Deactivate()
+        {
+            _currentState = EProcessControllerState.Idle;
+            gameObject.SetActive(false);
+        }
+    }
 }
 

@@ -35,6 +35,7 @@ namespace Core.Characters.AI
 			_movementController = new SequentialMovement(pathRoot.GetComponentsInChildren <Transform>(),
 			                                             _masterBrain.MovableObject,
 			                                             true);
+
 			_bellCreepy = Resources.Load <AudioClip>("Sounds/bellCreepy");
 			_effect = GameObject.FindObjectOfType<NoiseEffect>();
 			_player = GameObject.FindObjectOfType<PlayerBehaviour>();

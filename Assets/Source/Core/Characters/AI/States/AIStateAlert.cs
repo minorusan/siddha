@@ -49,7 +49,6 @@ namespace Core.Characters.AI
         public override void OnLeave()
         {
             _masterBrain.MovableObject.MovementSpeed = _previousMoveSpeed;
-           
         }
 
         public override void UpdateState()
@@ -64,29 +63,35 @@ namespace Core.Characters.AI
                 _masterBrain.StatusText.text = "Whatever..";
             }
 
+            var path = FindNewpath();
+            if (path.Nodes.Count <= 1)
+            {
+                PlayerBehaviour.CurrentPlayer.Kill();
+            }
+
             if (_masterBrain.MovableObject.ReachedDestination)
             {
-                FindNewpath();
+                _masterBrain.MovableObject.BeginMovementByPath(path);
             }
             _timeInState -= Time.deltaTime;
         }
 
-        private void FindNewpath()
+        private Path FindNewpath()
         {
             var suitableAttackPosition = MapController.GetNodeByPosition(_player.transform.position);
             if (suitableAttackPosition == null)
             {
-                return;
+                return null;
             }
             if (suitableAttackPosition.CurrentCellType == ECellType.Blocked)
             {
                 suitableAttackPosition =
                     MapController.GetNeighbours(suitableAttackPosition).First(i => i.CurrentCellType == ECellType.Walkable);
             }
-            _masterBrain.MovableObject.BeginMovementByPath(Pathfinder.FindPathToDestination(
+            return Pathfinder.FindPathToDestination(
                 _map,
                 _masterBrain.MovableObject.CurrentNode.Position,
-                suitableAttackPosition.Position));
+                suitableAttackPosition.Position);
         }
     }
 }
