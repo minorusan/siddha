@@ -20,6 +20,8 @@ namespace Core.ObjectPooling
         private TrailRenderer _trailRenderer;
         public Material[] Materials;
         public Material[] TrailMaterials;
+        public AudioClip[] ThrowSounds;
+        public AudioClip[] HitSounds;
 
         public EProjecileID ID;
         public float Speed;
@@ -53,6 +55,7 @@ namespace Core.ObjectPooling
         private void OnCollisionEnter2D(Collision2D collision)
         {
             _active = false;
+            AudioSource.PlayClipAtPoint(HitSounds[Random.Range(0, HitSounds.Length - 1)], transform.position);
             GetComponent<Collider2D>().enabled = false;
         }
 
@@ -66,6 +69,7 @@ namespace Core.ObjectPooling
             _target = new Vector3(ThrowController.Instance.ThrowTarget.transform.position.x,
                 ThrowController.Instance.ThrowTarget.transform.position.y + 0.5f,
                 -0.5f);
+            AudioSource.PlayClipAtPoint(ThrowSounds[Random.Range(0, ThrowSounds.Length - 1)], transform.position);
         }
 
         private void InitDamage()

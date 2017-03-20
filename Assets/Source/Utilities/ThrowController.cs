@@ -10,9 +10,11 @@ namespace Core.Interactivity.Combat
     public class ThrowController : MonoBehaviour
     {
         private static ThrowController _instance;
+        private TargetHandler _targetHandler;
         private float _coolDown;
         private ProjectileBase _projectile;
-        public GameObject ThrowTarget { get; set; }
+        private GameObject _throwTarget;
+        
         private float _coolDownLeft;
         private Quaternion _rotationVector;
 
@@ -33,45 +35,40 @@ namespace Core.Interactivity.Combat
             }
         }
 
+        public GameObject ThrowTarget
+        {
+            get
+            {
+                return _throwTarget;
+            }
+
+            set
+            {
+                Target.SetActive(false);
+                _throwTarget = value;
+                Target.SetActive(true);
+            }
+        }
+
         private void Awake()
         {
-            _rotationVector = Quaternion.Euler(new Vector3(0f, 0f, -1f));
             for (int i = 0; i < Projectiles.Length; i++)
             {
                 PoolManager.Instance.CreatePool(Projectiles[i].gameObject, 20);
             }
             SetProjectile(EProjecileID.ProjectileRock);
+            _targetHandler = new TargetHandler(this);
+        }
+
+        private void Update()
+        {
+            _targetHandler.UpdateTarget();
         }
 
         public void SetProjectile(EProjecileID id)
         {
-            _projectile = Projectiles.FirstOrDefault(p=>p.ID == id);
+            _projectile = Projectiles.FirstOrDefault(p => p.ID == id);
             _coolDown = _projectile.Cooldown;
-        }
-
-        public void Update()
-        {
-            HandleTargetUpdate();
-        }
-
-        private void HandleTargetUpdate()
-        {
-            if (ThrowTarget != null && ThrowTarget.activeInHierarchy)
-            {
-                if (!Target.activeInHierarchy)
-                {
-                    Target.SetActive(true);
-                }
-                Target.transform.position = new Vector3(ThrowTarget.transform.position.x,
-                    ThrowTarget.transform.position.y + 0.3f, -0.5f);
-
-                Target.transform.rotation = Quaternion.RotateTowards(Target.transform.rotation, Target.transform.rotation * _rotationVector, 2f);
-            }
-            else
-            {
-                Target.SetActive(false);
-                ThrowTarget = null;
-            }
         }
 
         public void Throw()
@@ -97,4 +94,36 @@ namespace Core.Interactivity.Combat
         }
     }
 
+    public class TargetHandler
+    {
+        private ThrowController _controller;
+        private Quaternion _rotationVector;
+
+        public TargetHandler(ThrowController controller)
+        {
+            _controller = controller;
+            _rotationVector = Quaternion.Euler(new Vector3(0f, 0f, -1f));
+        }
+
+        public void UpdateTarget()
+        {
+            if (_controller.ThrowTarget != null && _controller.ThrowTarget.activeInHierarchy)
+            {
+                if (!_controller.Target.activeInHierarchy)
+                {
+                    _controller.Target.SetActive(true);
+                }
+                _controller.Target.transform.position = new Vector3(_controller.ThrowTarget.transform.position.x,
+                    _controller.ThrowTarget.transform.position.y + 0.3f, -0.5f);
+
+                _controller.Target.transform.rotation = Quaternion.RotateTowards(_controller.Target.transform.rotation,
+                    _controller.Target.transform.rotation * _rotationVector, 2f);
+            }
+            else
+            {
+                _controller.Target.SetActive(false);
+                _controller.ThrowTarget = null;
+            }
+        }
+    }
 }
