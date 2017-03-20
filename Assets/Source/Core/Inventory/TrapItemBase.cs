@@ -1,7 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System;
-
 
 namespace Core.Inventory
 {
@@ -9,8 +6,9 @@ namespace Core.Inventory
 	public class TrapItemBase : AItemBase
 	{
 		private const string kTrapsPath = "Prefabs/Traps/";
-		private TrapAction _trapAction;
-		private float _requiredTime;
+        private float _requiredTime;
+
+        private TrapAction _trapAction;
 		private GameObject _trapPrefab;
 
 		public GameObject TrapPrefab
@@ -45,5 +43,3 @@ namespace Core.Inventory
 		}
 	}
 }
-
-

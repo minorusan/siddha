@@ -62,7 +62,8 @@ namespace Core.Inventory
 			_allItems.Add(new AItemBase("genericitem.id.chain", "Old handcuffs", EItemType.Generic, 50));
 			_allItems.Add(new AItemBase("genericitem.id.nippers", "Nippers", EItemType.Generic));
 
-			InitialiseTraps();
+            _allItems.Add(new StackableItemBase("projectile.id.rocks","Small rocks pile", 20));
+            InitialiseTraps();
 		}
 
 		public static List<AItemBase> GetItems()

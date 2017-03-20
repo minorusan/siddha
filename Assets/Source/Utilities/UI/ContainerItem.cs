@@ -1,7 +1,5 @@
 ﻿using Core.Inventory;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -24,6 +22,10 @@ namespace UI
             {
                 _item = ItemsData.GetItemById(value);
                 GetComponent<Image>().sprite = InventoryImagesLoader.GetImageForItem(_item.EItemType, _item.ItemID);
+                if (_item is StackableItemBase)
+                {
+                    GetComponentInChildren<Text>().text = ((StackableItemBase)_item).MaxInStack.ToString();
+                }
             }
         }
 
@@ -32,5 +34,4 @@ namespace UI
             OnItemSelected(_item, this);
         }
     }
-
 }

@@ -62,11 +62,11 @@ namespace Core.Characters.AI
            
             _startPosition = _guardBrains.transform.position;
             _masterBrain.StatusText.text = _guardBrains.AttackStrings[Random.Range(0, _guardBrains.AttackStrings.Length)];
-            _sound = ((GuardBrains)_masterBrain).AngerSound;
+           
 			
 			_player = PlayerBehaviour.CurrentPlayer;
 		    _masterBrain.MovableObject.MovementSpeed *= 2f;
-			_player.GetComponent<StressAffector>().DemandTickTime *= 0.8f;
+		
             AudioSource.PlayClipAtPoint(_sound, _masterBrain.transform.position, 1f);
         }
 
