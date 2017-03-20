@@ -14,13 +14,16 @@ namespace Core.Characters.Player
         public static float BaseMovementSpeed = 10f;
         public AudioClip StepSound;
         private DynamicLight _light;
+
         #region Private
+
         private AnimateSpriteSheet _animator;
         private Renderer _renderer;
         private static PlayerBehaviour _player;
         private StressAffector _stress;
         private DeathController _death;
         private bool _moves;
+
         #endregion
 
         [Header("Movement")]
@@ -59,8 +62,8 @@ namespace Core.Characters.Player
 
         private void Awake()
         {
+            Application.targetFrameRate = 60;
             _light = GetComponentInChildren<DynamicLight>();
-           // TurnOnLight(false);
             BaseMovementSpeed = MovementSpeed;
             Debug.LogWarning("Tutorial::Removing player prefs!");
             PlayerPrefs.DeleteAll();
@@ -88,13 +91,12 @@ namespace Core.Characters.Player
 
         private void FixedUpdate()
         {
-            if (TouchInput.TouchPosition != Vector2.zero)
+            var input = new Vector2(CnControls.CnInputManager.GetAxis("Horizontal"),
+                CnControls.CnInputManager.GetAxis("Vertical"));
+            Moves = input != Vector2.zero;
+            if (Moves)
             {
-                Moves = true;
-                transform.position = Vector2.MoveTowards(transform.position, TouchInput.TouchPosition, MovementSpeed * Time.deltaTime);
-            }else
-            {
-                Moves = false;
+                transform.position = Vector2.MoveTowards(transform.position, (Vector2)transform.position + input, MovementSpeed * Time.deltaTime);
             }
         }
 

@@ -6,120 +6,126 @@ using Core.Characters.AI;
 using Core.Characters.Player;
 using DynamicLight2D;
 using Debug = UnityEngine.Debug;
-
+using Core.Interactivity.Combat;
 
 namespace Core.Interactivity.AI
 {
-	public class GuardBrains:ArtificialIntelligence
-	{
+    public class GuardBrains : ArtificialIntelligence
+    {
         public static event Action PlayerCaught;
-        
+
         private Vector3 _startPosition;
-	    private float _searchTime;
-	    private bool _inLineOfSight = false;
-	    private DynamicLight light2d;
+        private float _searchTime;
+        private float _health = 1f;
+        private bool _inLineOfSight = false;
+        private DynamicLight light2d;
         public event Action Spotted;
         public event Action RanAway;
+
         public float SearchDistance = 6f;
         public float ActiveDistance = 25f;
         public float AlertTime = 5f;
-		public Image SuspentionBar;
-		public Transform WanderingPointsRoot;
-		public AudioClip AngerSound;
+        public Image SuspentionBar;
+        public Transform WanderingPointsRoot;
+        public AudioClip AngerSound;
 
-	    [Header("Dialogue strings")]
+        [Header("Dialogue strings")]
         public string[] WanderingStrings;
         public string[] AlertStrings;
         public string[] AttackStrings;
 
         private SpriteRenderer _renderer;
 
-		public SpriteRenderer Renderer
-		{
-			get
-			{
-				if(_renderer == null)
-				{
-					_renderer = GetComponentInChildren<SpriteRenderer>();
-				}
-				return _renderer;
-			}
-		}
-
-		private void OnDrawGizmos()
-		{
-			//var color = Color.white;
-			//var radius = SearchDistance;
-			//#if !UNITY_EDITOR
-   //         if (_currentState != null && _currentState.State == EAIState.Wandering)
-   //         {
-   //         color = Color.green;
-   //         }
-   //         else
-   //         {
-   //         color = Color.yellow;
-   //         radius = SearchDistance * 2f;
-   //         }
-			//#endif
-            
-			//Gizmos.color = color;
-			//Gizmos.DrawWireSphere(transform.position, radius);
-   //         Gizmos.color = Color.red;
-   //         Gizmos.DrawWireSphere(transform.position, ActiveDistance);
+        public SpriteRenderer Renderer
+        {
+            get
+            {
+                if (_renderer == null)
+                {
+                    _renderer = GetComponentInChildren<SpriteRenderer>();
+                }
+                return _renderer;
+            }
         }
 
-		#region ArtificialIntelligence
+        #region ArtificialIntelligence
 
-		protected override void InitStates()
-		{
-		    light2d = GetComponentInChildren<DynamicLight>();
+        protected override void InitStates()
+        {
+            light2d = GetComponentInChildren<DynamicLight>();
             _startPosition = transform.position;
-         
-			_availiableStates.Add(EAIState.Wandering, new AIStateWandering(this, SearchDistance, WanderingPointsRoot, SuspentionBar));
-			_availiableStates.Add(EAIState.Alert, new AIStateAlert(this, SearchDistance * 2, AlertTime));
-			_availiableStates.Add(EAIState.Attack, new AIStateAttack(this));
-			BaseState = EAIState.Wandering;
-		}
 
-		protected override void Start()
-		{
-			base.Start();
+            _availiableStates.Add(EAIState.Wandering, new AIStateWandering(this, SearchDistance, WanderingPointsRoot, SuspentionBar));
+            _availiableStates.Add(EAIState.Alert, new AIStateAlert(this, SearchDistance * 2, AlertTime));
+            _availiableStates.Add(EAIState.Attack, new AIStateAttack(this));
+            BaseState = EAIState.Wandering;
+        }
+
+        protected override void Start()
+        {
+            base.Start();
             PlayerCaught += OnCaught;
-			_renderer = GetComponent <SpriteRenderer>();
-			if(AngerSound == null)
-			{
-				AngerSound = Resources.Load<AudioClip>("Sounds/moan");
-			}
-		}
+            _renderer = GetComponent<SpriteRenderer>();
+            if (AngerSound == null)
+            {
+                AngerSound = Resources.Load<AudioClip>("Sounds/moan");
+            }
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+            var touch = UnityEngine.Input.GetMouseButtonDown(0);
+           
+#if !UNITY_EDITOR && UNITY_ANDROID
+            touch = UnityEngine.Input.touches.Length >= 1;
+#endif
+            if (touch)
+            {
+                var position = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+
+#if !UNITY_EDITOR && UNITY_ANDROID
+              position = Camera.main.ScreenToWorldPoint(UnityEngine.Input.touches[UnityEngine.Input.touches.Length - 1].position);
+#endif
+
+                if (GetComponent<Collider2D>().bounds.Contains((Vector2)position))
+                {
+                    ThrowController.Instance.ThrowTarget = gameObject;
+                }
+            }
+
+            HandleSearching();
+        }
+
+        private void HandleSearching()
+        {
+            if (_searchTime > 0f)
+            {
+                _searchTime -= Time.deltaTime;
+                if (_searchTime <= 0f)
+                {
+                    ChangeState();
+                }
+            }
+        }
+
+        #endregion
 
         private void OnCaught()
         {
             transform.position = _startPosition;
         }
 
-        protected override void Update()
-		{
-			base.Update();
-		    if (_searchTime > 0f)
-		    {
-		        _searchTime -= Time.deltaTime;
-		        if (_searchTime <= 0f)
-		        {
-		            ChangeState();
-		        }
-		    }
-		}
-
-	    public void OnSpotted(GameObject go)
-	    {
+        public void OnSpotted(GameObject go)
+        {
             if (go.tag == "Player" && !PlayerQuirks.Shadowed)
-	        {
-	            _inLineOfSight = true;
-                
+            {
+                _inLineOfSight = true;
+
                 _searchTime = -1f;
-	            Spotted();
-	        }
-	    }
+                Spotted();
+            }
+        }
 
         public void OnExit(GameObject go)
         {
@@ -130,13 +136,13 @@ namespace Core.Interactivity.AI
             }
         }
 
-	    private void ChangeState()
-	    {
-	        if (!_inLineOfSight)
-	        {
+        private void ChangeState()
+        {
+            if (!_inLineOfSight)
+            {
                 RanAway();
-	        }
-	    }
+            }
+        }
 
         private void OnTriggerStay2D(Collider2D collision)
         {
@@ -146,8 +152,5 @@ namespace Core.Interactivity.AI
                 PlayerBehaviour.CurrentPlayer.Kill();
             }
         }
-
-        #endregion
     }
 }
-

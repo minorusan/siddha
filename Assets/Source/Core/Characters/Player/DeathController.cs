@@ -15,6 +15,10 @@ namespace Core.Characters.Player
 
         public void Kill()
         {
+            
+            SceneManager.LoadScene(0);
+            return;
+
             var minDeathChance = PlayerQuirks.GetCharactheristic(EPlayerCharachteristic.Empathy) +
                 PlayerQuirks.GetCharactheristic(EPlayerCharachteristic.Prowlness) +
                 PlayerQuirks.GetCharactheristic(EPlayerCharachteristic.Reflection);

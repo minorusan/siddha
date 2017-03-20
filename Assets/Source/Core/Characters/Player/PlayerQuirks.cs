@@ -19,7 +19,8 @@ namespace Core.Characters.Player
     {
         Hiding,
         Lockpicking,
-        Scavanging
+        Scavanging,
+        Throwing
     }
 
     public static class PlayerQuirks
@@ -32,12 +33,14 @@ namespace Core.Characters.Player
             _skils.Add(EPlayerSkills.Hiding, 0);
             _skils.Add(EPlayerSkills.Lockpicking, 1);
             _skils.Add(EPlayerSkills.Scavanging, 4);
+            _skils.Add(EPlayerSkills.Throwing, 10);
 
             _characteristics.Add(EPlayerCharachteristic.Empathy, 1);
             _characteristics.Add(EPlayerCharachteristic.Erudition, 0);
             _characteristics.Add(EPlayerCharachteristic.Prowlness, 5);
             _characteristics.Add(EPlayerCharachteristic.Reflection, 2);
             _characteristics.Add(EPlayerCharachteristic.SelfCare, 5);
+
         }
 
         public static void ModifyCharachteristic(EPlayerCharachteristic characteristic, int value)
@@ -53,7 +56,7 @@ namespace Core.Characters.Player
 
         public static float GetSkill(EPlayerSkills skill)
         {
-            return (100 - _skils[skill])/100f;
+            return _skils[skill]/100f;
         }
 
         public static int GetCharactheristic(EPlayerCharachteristic characteristic)
