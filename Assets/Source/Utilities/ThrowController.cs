@@ -26,6 +26,7 @@ namespace Core.Interactivity.Combat
         public Text ProjectilesCount;
         public ProjectileBase[] Projectiles;
         public GameObject Target;
+        public GameObject Animation;
 
         public static ThrowController Instance
         {
@@ -79,6 +80,7 @@ namespace Core.Interactivity.Combat
 
             ProjectileView.sprite = _currentProjectileInfo.Image;
             ProjectilesCount.text = _currentProjectileInfo.CurrentCount.ToString();
+            Animation.SetActive(true);
         }
 
         public void Throw()

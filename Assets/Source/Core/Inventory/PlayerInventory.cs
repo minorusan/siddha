@@ -58,8 +58,12 @@ namespace Core.Inventory
         {
             if (_items.Count < kMaxInventoryCapacity)
             {
-                _items.Add(item);
-                HandleStacableItem(item);
+               
+                if (HandleStacableItem(item))
+                {
+                    _items.Add(item);
+                }
+               
                 //ShowDialogueForItem(item);
                 AudioSource.PlayClipAtPoint(_sound, Camera.main.transform.position, 0.01f);
                 if (InventoryChanged != null)
@@ -72,9 +76,8 @@ namespace Core.Inventory
             return false;
         }
 
-        private void HandleStacableItem(AItemBase item)
+        private bool HandleStacableItem(AItemBase item)
         {
-            
             if (item is StackableItemBase)
             {
                 var projectile = ((StackableItemBase)item).ProjectilePrefab.GetComponent<ProjectileBase>();
@@ -88,14 +91,19 @@ namespace Core.Inventory
                     {
                         ThrowController.Instance.SetProjectile(GetProjectiles()[0]);
                     }
+                    ThrowController.Instance.UpdateInfo();
+                    return true;
                 }
                 else
                 {
                     projectileInfo.CurrentCount += ((StackableItemBase)item).MaxInStack;
                     projectileInfo.CurrentCount = Mathf.Clamp(projectileInfo.CurrentCount, 0, ((StackableItemBase)item).MaxInStack);
+                    ThrowController.Instance.UpdateInfo();
+                    ThrowController.Instance.Animation.SetActive(true);
+                    return false;
                 }
-                ThrowController.Instance.UpdateInfo();
             }
+            return true;
         }
 
         public void RemoveItemFromInventory(string item)

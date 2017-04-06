@@ -69,10 +69,7 @@ namespace Core.Map
                // _dayNight.Block(false);
 
                // PlayerBehaviour.CurrentPlayer.TurnOnLight(false);
-                foreach (var dynamicLight in _lights)
-                {
-                    dynamicLight.enabled = false;
-                }
+             
              
                 _selfRenderer.enabled = true;
             }
