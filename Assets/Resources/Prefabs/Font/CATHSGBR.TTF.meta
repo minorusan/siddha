@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: fb74a2cefa1b22e469ac622d8b35a49c
+timeCreated: 1486029426
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: CatholicSchoolGirls BB
+  fontNames:
+  - CatholicSchoolGirls BB
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

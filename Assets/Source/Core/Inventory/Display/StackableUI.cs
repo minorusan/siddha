@@ -51,7 +51,7 @@ namespace Core.Inventory.Display
         public void OnPointerClick (PointerEventData eventData)
 		{
 			_selfRenderer.color = Color.grey;
-            ThrowController.Instance.SetProjectile(_item.ProjectilePrefab.GetComponent<ProjectileBase>().ID);
+           
 		}
 
 		#endregion

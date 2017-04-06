@@ -62,12 +62,12 @@ namespace Core.Characters.AI
            
             _startPosition = _guardBrains.transform.position;
             _masterBrain.StatusText.text = _guardBrains.AttackStrings[Random.Range(0, _guardBrains.AttackStrings.Length)];
-           
-			
-			_player = PlayerBehaviour.CurrentPlayer;
+            _masterBrain.AnimationController.CurrentState = Enemies.EAnimationState.EAnimationStateAttack;
+            _player = PlayerBehaviour.CurrentPlayer;
 		    _masterBrain.MovableObject.MovementSpeed *= 2f;
-		
-            AudioSource.PlayClipAtPoint(_sound, _masterBrain.transform.position, 1f);
+
+            _masterBrain.AnimationController.CurrentState = Enemies.EAnimationState.EAnimationStateAttack;
+            AudioSource.PlayClipAtPoint(_guardBrains.AngerSound, _masterBrain.transform.position, 1f);
         }
 
 		public override void UpdateState()

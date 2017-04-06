@@ -8,190 +8,215 @@ using System.Linq;
 using Core.Utilities;
 using Core.Characters.Player;
 using UnityEngine.Events;
-
+using Core.Interactivity.Combat;
 
 namespace Utils.UI
 {
-	public class ItemInfoDisplayer : MonoBehaviour, IPointerClickHandler
-	{
-		#region Private
+    public class ItemInfoDisplayer : MonoBehaviour, IPointerClickHandler
+    {
+        #region Private
 
-		private const string kItemDisplaySpritesPath = "Sprites/Items/Display/";
-		private Image _displayImage;
-	    private Image _actionButtonImage;
-		private AItemBase _currentItem;
-		private Text _descriptionText;
+        private const string kItemDisplaySpritesPath = "Sprites/Items/Display/";
+        private Image _displayImage;
+        private Image _actionButtonImage;
+        private AItemBase _currentItem;
+        private Text _descriptionText;
 
-		#endregion
+        #endregion
 
-	    public Sprite[] ButtonImages;
-	    public Button ActionButton;
-	    public Button DeleteButton;
-	    public Image DisplayImage;
-		public Text ItemName;
+        public Sprite[] ButtonImages;
+        public Button ActionButton;
+        public Button DeleteButton;
+        public Image DisplayImage;
+        public Text ItemName;
 
-		#region Monobehaviour
+        #region Monobehaviour
 
-		public void Start ()
-		{
-		    _displayImage = DisplayImage;
-			_descriptionText = GetComponentInChildren <Text> ();
+        public void Start()
+        {
+            _displayImage = DisplayImage;
+            _descriptionText = GetComponentInChildren<Text>();
 
-		    _actionButtonImage = ActionButton.GetComponent<Image>();
+            _actionButtonImage = ActionButton.GetComponent<Image>();
             AItemBase.Displayer = this;
-			gameObject.SetActive(false);
-		}
+            gameObject.SetActive(false);
+        }
 
-		public void Reset ()
-		{
-			_currentItem = null;
-			var items = Inventrory.GetInventoryItems ();
-		
-			foreach (var item in items) {
-				item.ToggleOutline (false);
-			}
-		}
+        public void Reset()
+        {
+            _currentItem = null;
+            var items = Inventrory.GetInventoryItems();
 
-		#endregion
+            foreach (var item in items)
+            {
+                item.ToggleOutline(false);
+            }
+        }
 
-		public void DisplayReceiptForItem (string itemId)
-		{
-			var image = Resources.Load <Sprite> (string.Format (kItemDisplaySpritesPath + itemId));
-			_currentItem = ItemsData.GetItemById (itemId);
+        #endregion
 
-			_displayImage.gameObject.SetActive (true);
-			_displayImage.sprite = image;
+        public void DisplayReceiptForItem(string itemId)
+        {
+            var image = Resources.Load<Sprite>(string.Format(kItemDisplaySpritesPath + itemId));
+            _currentItem = ItemsData.GetItemById(itemId);
 
-			_descriptionText.gameObject.SetActive (true);
-			_descriptionText.text = ItemIDStorage.GetDescriptionForItem (itemId);
+            _displayImage.gameObject.SetActive(true);
+            _displayImage.sprite = image;
 
-			ItemName.gameObject.SetActive (true);
-			ItemName.text = _currentItem.Name;
-			DeleteButton.gameObject.SetActive (true);
-			DehighlightAllItems ();
+            _descriptionText.gameObject.SetActive(true);
+            _descriptionText.text = ItemIDStorage.GetDescriptionForItem(itemId);
 
-			var requiredItemsCount = 0;
+            ItemName.gameObject.SetActive(true);
+            ItemName.text = _currentItem.Name;
+            DeleteButton.gameObject.SetActive(true);
+            DehighlightAllItems();
+            ActionButton.onClick.RemoveAllListeners();
 
-			switch (_currentItem.EItemType) {
-			case EItemType.Receipt:
-				{
-					var receipt = ItemsData.GetReceiptById (itemId);
-				    _actionButtonImage.sprite = ButtonImages[0];
-				    ActionButton.onClick.AddListener(delegate { CraftItem(); });
-                        HighlightItems (receipt);
-					for (int i = 0; i < receipt.RequiredItems.Length; i++) {
-						if (Inventrory.GetInventoryItems ().Any (item => item.ItemID == receipt.RequiredItems [i])) {
-							requiredItemsCount++;
-						}
-					}
+            var requiredItemsCount = 0;
+
+            switch (_currentItem.EItemType)
+            {
+                case EItemType.Receipt:
+                    {
+                        var receipt = ItemsData.GetReceiptById(itemId);
+                        _actionButtonImage.sprite = ButtonImages[0];
+                        ActionButton.onClick.AddListener(delegate { CraftItem(); });
+                        HighlightItems(receipt);
+                        for (int i = 0; i < receipt.RequiredItems.Length; i++)
+                        {
+                            if (Inventrory.GetInventoryItems().Any(item => item.ItemID == receipt.RequiredItems[i]))
+                            {
+                                requiredItemsCount++;
+                            }
+                        }
                         ActionButton.gameObject.SetActive(true);
                         ActionButton.interactable = receipt.RequiredItems.Length <= requiredItemsCount;
-					break;
-				}
-			case EItemType.Trap:
-				{
+                        break;
+                    }
+                case EItemType.Trap:
+                    {
                         _actionButtonImage.sprite = ButtonImages[1];
                         ActionButton.gameObject.SetActive(true);
                         ActionButton.onClick.AddListener(delegate { SetATrap(); });
                         break;
-				}
+                    }
+                case EItemType.Stackable:
+                    {
+                        _actionButtonImage.sprite = ButtonImages[2];
+                        ActionButton.gameObject.SetActive(true);
+                        ActionButton.onClick.AddListener(delegate { SetAProjectile(); });
+                        break;
+                    }
+                default:
+                    {
+                        ActionButton.gameObject.SetActive(false);
+                        break;
+                    }
+            }
+        }
 
-			default:
-				{
-					ActionButton.gameObject.SetActive (false);
-					break;
-				}
-			}
-		}
+        public void SetAProjectile()
+        {
+            var projectile = PlayerInventory.Instance.GetProjectiles().FirstOrDefault(p=>p.ItemReference.ItemID == _currentItem.ItemID);
+            ThrowController.Instance.SetProjectile(projectile);
+        }
 
-		public void SetATrap ()
-		{
-			var trap = ItemsData.GetTrapById (_currentItem.ItemID);
-			PlayerInventory.Instance.RemoveItemFromInventory (trap.ItemID);
+        public void SetATrap()
+        {
+            var trap = ItemsData.GetTrapById(_currentItem.ItemID);
+            PlayerInventory.Instance.RemoveItemFromInventory(trap.ItemID);
 
-			BeginSettingTrapWithCallback ();
-			_displayImage.gameObject.SetActive (false);
-			_descriptionText.gameObject.SetActive (false);
+            BeginSettingTrapWithCallback();
+            _displayImage.gameObject.SetActive(false);
+            _descriptionText.gameObject.SetActive(false);
 
-			ActionButton.gameObject.SetActive (false);
-			DeleteButton.gameObject.SetActive (false);
-		}
+            ActionButton.gameObject.SetActive(false);
+            DeleteButton.gameObject.SetActive(false);
+        }
 
-		public void CraftItem ()
-		{
-			var receipt = ItemsData.GetReceiptById (_currentItem.ItemID);
-			for (int i = 0; i < receipt.RequiredItems.Length; i++) {
-				PlayerInventory.Instance.RemoveItemFromInventory (receipt.RequiredItems [i]);
-			}
+        public void CraftItem()
+        {
+            var receipt = ItemsData.GetReceiptById(_currentItem.ItemID);
+            for (int i = 0; i < receipt.RequiredItems.Length; i++)
+            {
+                PlayerInventory.Instance.RemoveItemFromInventory(receipt.RequiredItems[i]);
+            }
 
-			_displayImage.gameObject.SetActive (false);
-			ActionButton.gameObject.SetActive (false);
-			DeleteButton.gameObject.SetActive (false);
-			_descriptionText.gameObject.SetActive (false);
-			BeginCraftingWithCallback ();
-		}
+            _displayImage.gameObject.SetActive(false);
+            ActionButton.gameObject.SetActive(false);
+            DeleteButton.gameObject.SetActive(false);
+            _descriptionText.gameObject.SetActive(false);
+            BeginCraftingWithCallback();
+        }
 
-		private void HighlightItems (AReceiptItemBase receipt)
-		{
-			foreach (var item in Inventrory.GetInventoryItems ()) {
-				if (receipt.RequiredItems.Any (i => i == item.ItemID)) {
-					item.ToggleOutline (true);
-				} else {
-					item.ToggleOutline (false);
-				}
-			}
-		}
+        private void HighlightItems(AReceiptItemBase receipt)
+        {
+            foreach (var item in Inventrory.GetInventoryItems())
+            {
+                if (receipt.RequiredItems.Any(i => i == item.ItemID))
+                {
+                    item.ToggleOutline(true);
+                }
+                else
+                {
+                    item.ToggleOutline(false);
+                }
+            }
+        }
 
-		private void BeginSettingTrapWithCallback ()
-		{
-			var trap = ItemsData.GetTrapById (_currentItem.ItemID);
-			var sprite = InventoryImagesLoader.GetImageForItem (trap.EItemType, trap.ItemID);
-			ProcessBarController.StartProcessWithCompletion (trap.RequiredTime, sprite, () => {
-				var instantiatedTrap = Instantiate (trap.TrapPrefab);
-				instantiatedTrap.transform.position = PlayerBehaviour.CurrentPlayer.transform.position;
-			}, Color.red);
-		}
+        private void BeginSettingTrapWithCallback()
+        {
+            var trap = ItemsData.GetTrapById(_currentItem.ItemID);
+            var sprite = InventoryImagesLoader.GetImageForItem(trap.EItemType, trap.ItemID);
+            ProcessBarController.StartProcessWithCompletion(trap.RequiredTime, sprite, () =>
+            {
+                var instantiatedTrap = Instantiate(trap.TrapPrefab);
+                instantiatedTrap.transform.position = PlayerBehaviour.CurrentPlayer.transform.position;
+            }, Color.red);
+        }
 
-		private void BeginCraftingWithCallback ()
-		{
-			var receipt = ItemsData.GetReceiptById (_currentItem.ItemID);
-			var item = ItemsData.GetItems ().Find (i => i.ItemID == receipt.ResultingItemId);
-			var sprite = InventoryImagesLoader.GetImageForItem (item.EItemType, item.ItemID);
-			ProcessBarController.StartProcessWithCompletion (receipt.RequiredTime, sprite, () => {
-				PlayerInventory.Instance.TryAddItemToInventory (item);
-			}, Color.cyan);
-		}
+        private void BeginCraftingWithCallback()
+        {
+            var receipt = ItemsData.GetReceiptById(_currentItem.ItemID);
+            var item = ItemsData.GetItems().Find(i => i.ItemID == receipt.ResultingItemId);
+            var sprite = InventoryImagesLoader.GetImageForItem(item.EItemType, item.ItemID);
+            ProcessBarController.StartProcessWithCompletion(receipt.RequiredTime, sprite, () =>
+            {
+                PlayerInventory.Instance.TryAddItemToInventory(item);
+            }, Color.cyan);
+        }
 
 
-		#region IPointerClickHandler implementation
+        #region IPointerClickHandler implementation
 
-		public void OnPointerClick (PointerEventData eventData)
-		{
-			_displayImage.gameObject.SetActive (false);
-	
-			DehighlightAllItems ();
-		}
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            _displayImage.gameObject.SetActive(false);
 
-		public void OnDeleteButton ()
-		{
-			PlayerInventory.Instance.RemoveItemFromInventory (_currentItem.ItemID);
-			_displayImage.gameObject.SetActive (false);
-			DeleteButton.gameObject.SetActive (false);
-			_descriptionText.gameObject.SetActive (false);
-			DehighlightAllItems ();
-		}
+            DehighlightAllItems();
+        }
 
-		private void DehighlightAllItems ()
-		{
-			var items = Inventrory.GetInventoryItems ();
+        public void OnDeleteButton()
+        {
+            PlayerInventory.Instance.RemoveItemFromInventory(_currentItem.ItemID);
+            _displayImage.gameObject.SetActive(false);
+            DeleteButton.gameObject.SetActive(false);
+            _descriptionText.gameObject.SetActive(false);
+            DehighlightAllItems();
+        }
 
-			var itemsExceptCurrent = items.Where (i => i != null && i.ItemID != _currentItem.ItemID).ToList ();
-			foreach (var item in itemsExceptCurrent) {
-				item.ToggleOutline (false);
-			}
-		}
+        private void DehighlightAllItems()
+        {
+            var items = Inventrory.GetInventoryItems();
 
-		#endregion
-	}
+            var itemsExceptCurrent = items.Where(i => i != null && i.ItemID != _currentItem.ItemID).ToList();
+            foreach (var item in itemsExceptCurrent)
+            {
+                item.ToggleOutline(false);
+            }
+        }
+
+        #endregion
+    }
 }
 

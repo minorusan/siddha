@@ -6,7 +6,7 @@ using System.Linq;
 
 using Core.Map;
 using Utils;
-
+using Core.Characters.Enemies;
 
 namespace Core.Characters.AI
 {
@@ -30,7 +30,8 @@ namespace Core.Characters.AI
 			}
 		}
 
-		public Text StatusText;
+        public EnemyAnimationController AnimationController;
+        public Text StatusText;
 
 		#region Monobehaviour
 

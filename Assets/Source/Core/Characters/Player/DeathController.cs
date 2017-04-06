@@ -40,7 +40,6 @@ namespace Core.Characters.Player
         {
             if (collision.tag == "CheckPoint")
             {
-                Debug.Log("Checkpoint"); 
                 _latestCheckpoint = collision.transform;
             }
         }

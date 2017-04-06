@@ -8,6 +8,7 @@ using Core.Utilities.UI;
 using Core.Gameplay.Interactivity;
 using Core.Interactivity;
 using Core.ObjectPooling;
+using Core.Interactivity.Combat;
 
 namespace Core.Inventory
 {
@@ -58,21 +59,7 @@ namespace Core.Inventory
             if (_items.Count < kMaxInventoryCapacity)
             {
                 _items.Add(item);
-                if (item is StackableItemBase)
-                {
-                    var projectile = ((StackableItemBase)item).ProjectilePrefab.GetComponent<ProjectileBase>();
-                    ProjectilesInfo projectileInfo;
-                    _projectiles.TryGetValue(projectile.ID, out projectileInfo);
-                    if (projectileInfo == null)
-                    {
-                        _projectiles.Add(projectile.ID, new ProjectilesInfo { ItemReference = item, Projectile = projectile, Image = InventoryImagesLoader.GetImageForItem(item.EItemType, item.ItemID), CurrentCount = ((StackableItemBase)item).MaxInStack });
-                    }
-                    else
-                    {
-                        projectileInfo.CurrentCount += ((StackableItemBase)item).MaxInStack;
-                        projectileInfo.CurrentCount = Mathf.Clamp(projectileInfo.CurrentCount, 0, ((StackableItemBase)item).MaxInStack);
-                    }
-                }
+                HandleStacableItem(item);
                 //ShowDialogueForItem(item);
                 AudioSource.PlayClipAtPoint(_sound, Camera.main.transform.position, 0.01f);
                 if (InventoryChanged != null)
@@ -83,6 +70,32 @@ namespace Core.Inventory
                 return true;
             }
             return false;
+        }
+
+        private void HandleStacableItem(AItemBase item)
+        {
+            
+            if (item is StackableItemBase)
+            {
+                var projectile = ((StackableItemBase)item).ProjectilePrefab.GetComponent<ProjectileBase>();
+                ProjectilesInfo projectileInfo;
+                _projectiles.TryGetValue(projectile.ID, out projectileInfo);
+                if (projectileInfo == null)
+                {
+                    _projectiles.Add(projectile.ID, new ProjectilesInfo { ItemReference = item, Projectile = projectile, Image = InventoryImagesLoader.GetImageForItem(item.EItemType, item.ItemID), CurrentCount = ((StackableItemBase)item).MaxInStack });
+
+                    if (GetProjectiles().Length <= 1)
+                    {
+                        ThrowController.Instance.SetProjectile(GetProjectiles()[0]);
+                    }
+                }
+                else
+                {
+                    projectileInfo.CurrentCount += ((StackableItemBase)item).MaxInStack;
+                    projectileInfo.CurrentCount = Mathf.Clamp(projectileInfo.CurrentCount, 0, ((StackableItemBase)item).MaxInStack);
+                }
+                ThrowController.Instance.UpdateInfo();
+            }
         }
 
         public void RemoveItemFromInventory(string item)

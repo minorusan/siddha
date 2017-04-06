@@ -69,42 +69,40 @@ namespace Core.Interactivity.Combat
             _targetHandler.UpdateTarget();
         }
 
-        public void SetProjectile(EProjecileID id)
+        public void SetProjectile(ProjectilesInfo projectileInfo)
         {
-            _projectile = Projectiles.FirstOrDefault(p => p.ID == id);
+            var projectilesInInventory = PlayerInventory.Instance.GetProjectiles();
+
+            _currentProjectileInfo = projectileInfo;
+            _projectile = Projectiles.FirstOrDefault(p => p.ID == projectileInfo.Projectile.ID);
             _coolDown = _projectile.Cooldown;
+
+            ProjectileView.sprite = _currentProjectileInfo.Image;
+            ProjectilesCount.text = _currentProjectileInfo.CurrentCount.ToString();
         }
 
         public void Throw()
         {
-            if (_projectile == null && PlayerInventory.Instance.HasProjectiles)
-            {
-                var projectilesInInventory = PlayerInventory.Instance.GetProjectiles();
-
-                _currentProjectileInfo = projectilesInInventory[0];
-               
-                SetProjectile(_currentProjectileInfo.Projectile.ID);
-                ProjectileView.sprite = _currentProjectileInfo.Image;
-                ProjectilesCount.text = _currentProjectileInfo.CurrentCount.ToString();
-            }
-            else if (!PlayerInventory.Instance.HasProjectiles)
-            {
-                return;
-            }
-
-            if (ThrowTarget != null && _coolDownLeft <= 0f && _currentProjectileInfo.CurrentCount > 0)
+            bool canShoot = ThrowTarget != null && _coolDownLeft <= 0f && _currentProjectileInfo != null &&
+                _currentProjectileInfo.CurrentCount > 0;
+            if (canShoot)
             {
                 _coolDownLeft = _coolDown;
                 StartCoroutine(HandleCooldown());
                 PoolManager.Instance.ReuseObject(_projectile.gameObject, new Vector3(PlayerBehaviour.CurrentPlayer.transform.position.x,
                     PlayerBehaviour.CurrentPlayer.transform.position.y + 0.5f, -1.2f), Quaternion.identity);
                 _currentProjectileInfo.CurrentCount--;
-                ProjectilesCount.text = _currentProjectileInfo.CurrentCount.ToString();
+                UpdateInfo();
                 if (_currentProjectileInfo.CurrentCount <= 0)
                 {
                     PlayerInventory.Instance.RemoveItemFromInventory(_currentProjectileInfo.ItemReference.ItemID);
                 }
             }
+        }
+
+        public void UpdateInfo()
+        {
+            ProjectilesCount.text = _currentProjectileInfo.CurrentCount.ToString();
         }
 
         private IEnumerator HandleCooldown()

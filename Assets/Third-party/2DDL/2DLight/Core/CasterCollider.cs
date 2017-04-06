@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class CasterCollider{
 	
 	public Collider2D collider;
 	public Vector2[] points;
-	public Transform transform;
+    public Vector2[] worldPoints;
+    public Transform transform;
 	public int TotalPointsCount;
+
+
 	public enum CasterType{
 		BoxCollider2d,
 		CircleCollider2d,
@@ -27,6 +31,7 @@ public class CasterCollider{
 		TotalPointsCount = coll.GetTotalPointCount();
 		points = new Vector2[TotalPointsCount];
 		points = coll.points;
+        worldPoints = coll.points;
 		type = CasterType.PolygonCollider2d;
 	}
 	
@@ -54,6 +59,7 @@ public class CasterCollider{
 		TotalPointsCount = coll.pointCount;
 		points = new Vector2[TotalPointsCount];
 		points = coll.points;
+        worldPoints = coll.points;
 		type = CasterType.EdgeCollider2d;
 	}
 	
@@ -78,9 +84,7 @@ public class CasterCollider{
 		p.width = thisBox.bounds.max.x ;
 		p.height = thisBox.bounds.max.y;
 		
-		
-		
-		
+
 		Vector2 []poly2DPoints = new Vector2[4];
 		poly2DPoints[0].x = p.x;
 		poly2DPoints[0].y = p.y;
@@ -93,8 +97,11 @@ public class CasterCollider{
 		
 		poly2DPoints[3].x = p.x;
 		poly2DPoints[3].y = p.height;
-		
-		if(inLocalSpace == true)
+
+        worldPoints = new Vector2[TotalPointsCount];
+        Array.Copy(poly2DPoints, worldPoints, TotalPointsCount);
+
+        if (inLocalSpace == true)
 		{
 			for (int i = 0; i < TotalPointsCount; i++){
 				// To local
@@ -155,7 +162,11 @@ public class CasterCollider{
 		//Debug.DrawLine(lightSource,p2,Color.white);
 		
 		Vector2 []poly2DPoints = new Vector2[2];
-		poly2DPoints[0] = (Vector2)transform.InverseTransformPoint((Vector3) p1);
+        worldPoints = new Vector2[TotalPointsCount];
+        worldPoints[0] = p1;
+        worldPoints[1] = p2;
+     
+        poly2DPoints[0] = (Vector2)transform.InverseTransformPoint((Vector3) p1);
 		poly2DPoints[1] = (Vector2)transform.InverseTransformPoint((Vector3) p2);
 		
 		

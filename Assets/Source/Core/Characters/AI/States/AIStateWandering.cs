@@ -59,7 +59,7 @@ namespace Core.Characters.AI
 			{
 				var playerNode = MapController.GetNodeByPosition(_player.transform.position);
 				_suspention = _suspention > 0f && playerNode != null ? 0.9f : 0f;
-
+                _masterBrain.AnimationController.CurrentState = Enemies.EAnimationState.EAnimationStateWalking;
 			   
 				_previousMoveSpeed = _masterBrain.MovableObject.MovementSpeed;
 				_masterBrain.MovableObject.MovementSpeed *= 0.4f;

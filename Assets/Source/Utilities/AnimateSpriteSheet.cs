@@ -2,8 +2,11 @@
 using System;
 using System.Collections;
 
+[ExecuteInEditMode]
 public class AnimateSpriteSheet : MonoBehaviour
 {
+    public event Action AnimationFinished;
+
     private Renderer _renderer;
     public int Columns = 5;
     public int Rows = 5;
@@ -62,6 +65,10 @@ public class AnimateSpriteSheet : MonoBehaviour
 
             if (RunOnce)
             {
+                if (AnimationFinished != null)
+                {
+                    AnimationFinished();
+                }
                 yield break;
             }
         }

@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: e82b59044bbe37149a6fdd9353bdd71a
+timeCreated: 1482326043
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Enchanted Land cyr-lat
+  fontNames:
+  - Enchanted Land cyr-lat
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

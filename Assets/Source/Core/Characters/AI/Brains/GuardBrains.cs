@@ -7,6 +7,7 @@ using Core.Characters.Player;
 using DynamicLight2D;
 using Debug = UnityEngine.Debug;
 using Core.Interactivity.Combat;
+using Core.Characters.Enemies;
 
 namespace Core.Interactivity.AI
 {
@@ -70,6 +71,25 @@ namespace Core.Interactivity.AI
             {
                 AngerSound = Resources.Load<AudioClip>("Sounds/moan");
             }
+
+            AnimationController.AnimationFinished += OnAnimationFinished;
+        }
+
+        private void OnAnimationFinished(EAnimationState obj)
+        {
+            switch (obj)
+            {
+                case EAnimationState.EAnimationStateSuspicious:
+                    {
+                        MovableObject.enabled = true;
+                        AnimationController.CurrentState = EAnimationState.EAnimationStateAlert;
+                        break;
+                    }
+                case EAnimationState.EAnimationStateAttack:
+                    break;
+                default:
+                    break;
+            }
         }
 
         protected override void Update()
@@ -124,6 +144,7 @@ namespace Core.Interactivity.AI
 
                 _searchTime = -1f;
                 Spotted();
+   
             }
         }
 

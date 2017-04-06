@@ -44,6 +44,9 @@ namespace Core.Characters.AI
             _timeInState = _alertTime;
             var _guardBrains = (GuardBrains)_masterBrain;
             _masterBrain.StatusText.text = _guardBrains.AlertStrings[Random.Range(0, _guardBrains.AlertStrings.Length)];
+
+            _masterBrain.AnimationController.CurrentState = Enemies.EAnimationState.EAnimationStateSuspicious;
+            _masterBrain.MovableObject.enabled = false;
         }
 
         public override void OnLeave()
