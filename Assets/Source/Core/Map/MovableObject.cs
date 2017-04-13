@@ -15,7 +15,7 @@ namespace Core.Map
 
         private Path _currentPath = new Path();
         private EMovableObjectState _currentState = EMovableObjectState.Standing;
-
+        private AudioSource _myScource;
         private AnimateSpriteSheet _animator;
 
         #endregion
@@ -67,6 +67,7 @@ namespace Core.Map
         private void Awake()
         {
             _animator = GetComponentInChildren<AnimateSpriteSheet>();
+            _myScource = gameObject.AddComponent<AudioSource>();
         }
 
         private void LateUpdate()
@@ -120,14 +121,15 @@ namespace Core.Map
         {
             while (true)
             {
-                AudioSource.PlayClipAtPoint(StepSound, transform.position, 0.6f);
-                yield return new WaitForSeconds(MovementSpeed * 10);
+                _myScource.PlayOneShot(StepSound, 0.05f);
+                var speed = (1f - MovementSpeed * 10)
+                yield return new WaitForSeconds(speed);
             }
         }
 
         public void Step()
         {
-            AudioSource.PlayClipAtPoint(StepSound, transform.position, 0.6f);
+            //_myScource.PlayOneShot(StepSound, 0.6f);
         }
 
         #region Internal
