@@ -36,11 +36,7 @@ namespace Core.Map
 				_map = GetComponent <MapController> ();
 				_map.InstantiateCells ();
 
-			}
-			for (int i = 0; i < Exits.Length; i++)
-			{
-				Exits [i].Init ();
-			}
+			}		
 		}
 
 		private void OnEnable ()

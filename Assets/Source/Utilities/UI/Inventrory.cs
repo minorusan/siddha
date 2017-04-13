@@ -12,7 +12,7 @@ namespace Utilities.UI
 	{
 		#region Private
 
-		private int maxItemsPerRow = 5;
+		private int maxItemsPerRow = 3;
 		private Transform[] _rows;
 		private static List<IInventoryUIItem> _uiitems = new List<IInventoryUIItem> ();
 		private List<GameObject> _instantiatedObjects = new List<GameObject> ();

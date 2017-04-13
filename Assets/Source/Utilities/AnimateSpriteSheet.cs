@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 
-[ExecuteInEditMode]
 public class AnimateSpriteSheet : MonoBehaviour
 {
     public event Action AnimationFinished;

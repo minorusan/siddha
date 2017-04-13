@@ -32,7 +32,7 @@ namespace Core.Characters.Player
         {
             _skils.Add(EPlayerSkills.Hiding, 0);
             _skils.Add(EPlayerSkills.Lockpicking, 1);
-            _skils.Add(EPlayerSkills.Scavanging, 4);
+            _skils.Add(EPlayerSkills.Scavanging, 20);
             _skils.Add(EPlayerSkills.Throwing, 10);
 
             _characteristics.Add(EPlayerCharachteristic.Empathy, 1);

@@ -19,7 +19,6 @@ namespace UnityStandardAssets.Utility
             Call,
         }
 
-
         [Serializable]
         public class Entry
         {
@@ -37,9 +36,8 @@ namespace UnityStandardAssets.Utility
         
         
         public Entries entries = new Entries();
-
         
-        private void Awake()
+        private void OnEnable()
         {
             foreach (Entry entry in entries.entries)
             {

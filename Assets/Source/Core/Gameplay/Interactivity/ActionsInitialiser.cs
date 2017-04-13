@@ -84,12 +84,12 @@ namespace Core.Gameplay.Interactivity
             var audioScavange = Resources.Load<AudioClip>("Sounds/scavange");
             InteractiveAction action = (GameObject obj) =>
             {
-                AudioSource.PlayClipAtPoint(audioScavange, Camera.main.transform.position);
+                AudioSource.PlayClipAtPoint(audioScavange, obj.transform.position, 1f);
                 ProcessBarController.StartProcessWithCompletion(3f * PlayerQuirks.GetSkill(EPlayerSkills.Scavanging),
                     Resources.Load<Sprite>("Sprites/Actions/action.id.container"), () =>
                                                                  {
                                                                      var container = obj.GetComponent<Container>();
-                                                                     ContainerUI.ShowForContainer(container);
+                                                                      ContainerUI.ShowForContainer(container);
                                                                  }, Color.green);
                 
             };

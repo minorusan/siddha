@@ -24,15 +24,8 @@ namespace Core.Map
 				return _bounds;
 			}
 		}
-
-		#if UNITY_EDITOR
-		[ReadOnly]
-		#endif
+        public bool Editable;
 		public EExitSide ExitSide;
-
-		#if UNITY_EDITOR
-		[ReadOnly]
-		#endif
 		public EExitSide LinksWithSide;
 		#if UNITY_EDITOR
 		[ReadOnly]
@@ -41,20 +34,15 @@ namespace Core.Map
 
 		#region Monobehaviour
 
-		public void Init ()
+		private void Init ()
 		{
 			ExitSide = GetExitSide ();
 			LinksWithSide = GetLinkingSide ();
 		}
 
-		private void OnEnable ()
-		{
-			Init ();
-		}
-
 		private void OnDrawGizmos ()
 		{
-			if (!_initialised)
+			if (Editable)
 			{
 				_initialised = true;
 				Init ();

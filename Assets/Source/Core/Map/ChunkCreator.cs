@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using Utils;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +11,7 @@ namespace Core.Map
     {
         #region Private
 
-        private const string kPathToChunkRoomPrefabs = "Prefabs/Decorations/Chunks/{0}/Rooms/";
+        private const string kPathToChunkRoomPrefabs = "Prefabs/Decorations/Chunks/{0}/Rooms/Default";
         private const string kPathToChunkEndRoomPrefabs = "Prefabs/Decorations/Chunks/{0}/Rooms/End/";
         private const string kPathToStartRoomPrefabs = "Prefabs/Decorations/Chunks/{0}/Rooms/Start/";
         private Room[] _rooms;
@@ -25,6 +24,8 @@ namespace Core.Map
         public int MaxRoomsCouns;
         public string ChunkName;
 
+        public bool PlacePlayer;
+
 #if UNITY_EDITOR
         [ReadOnly]
 #endif
@@ -32,7 +33,6 @@ namespace Core.Map
 
         private void OnEnable()
         {
-            Camera.main.GetComponent<CameraFollow>().enabled = false;
             _rooms = Resources.LoadAll<Room>(string.Format(kPathToChunkRoomPrefabs, ChunkName));
             _endRooms = Resources.LoadAll<Room>(string.Format(kPathToChunkEndRoomPrefabs, ChunkName));
             _startRooms = Resources.LoadAll<Room>(string.Format(kPathToStartRoomPrefabs, ChunkName));
@@ -67,14 +67,23 @@ namespace Core.Map
                 }
             }
 
-            SetLastRoom();
-            PlayerBehaviour.SetPlayerPosition(_generatedRoomsList[0].Map.CenterNode.Position);
+            //SetLastRoom();
 
             foreach (var item in _generatedRoomsList)
             {
                 item.Map.InstantiateCells();
             }
-            Camera.main.GetComponent<CameraFollow>().enabled = true;
+
+            PlacePlayerIfNeeded();
+        }
+
+        private void PlacePlayerIfNeeded()
+        {
+            if (PlacePlayer)
+            {
+                var startPoint = GameObject.Find("START_POINT");
+                PlayerBehaviour.CurrentPlayer.transform.position = startPoint.transform.position;
+            }
         }
 
         private void GenerateRoomForAnExitOfRoom(RoomExit exit, GameObject owner)
@@ -96,11 +105,10 @@ namespace Core.Map
             instantiatedNeighbour.transform.parent = transform;
             instantiatedNeighbour.transform.localPosition = Vector3.zero;
 
-            instantiatedNeighbour.gameObject.SetActive(true);
             instantiatedNeighbour.Map.InstantiateCells();
 
             PairExitWithRoom(exit, instantiatedNeighbour);
-
+            instantiatedNeighbour.gameObject.SetActive(true);
             var unCheckedExits = instantiatedNeighbour.Exits.Where(e => e.LinkedWith == null).ToArray();
             for (int i = 0; i < unCheckedExits.Length; i++)
             {

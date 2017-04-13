@@ -76,7 +76,7 @@ namespace UI
 
         public void PlaySound()
         {
-            AudioSource.PlayClipAtPoint(Sound, Camera.main.transform.position);
+            AudioSource.PlayClipAtPoint(Sound, transform.position);
         }
     }
 
