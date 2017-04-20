@@ -71,6 +71,7 @@ namespace Core.Map
         public ECellType CurrentCellType;
         public Vector3 Position;
         public IJ GridPosition;
+        public bool Target;
     }
 
     [Serializable]

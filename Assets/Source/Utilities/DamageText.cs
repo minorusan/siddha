@@ -31,11 +31,13 @@ public class DamageText : PoolObject
     {
         base.OnObjectReuse(parameters);
         var damageInfo = parameters as DamageInfo;
-
-        _iterator = damageInfo.Crit ? 1f : 0.5f;
-        transform.localScale = damageInfo.Crit ? Vector3.one * 2f : Vector3.one;
-        _text.color = damageInfo.Crit ? Color.red : Color.white;
-        _text.text = damageInfo.Damage.ToString("0.00");
+        if(damageInfo != null)
+        {
+            _iterator = damageInfo.Crit ? 1f : 0.5f;
+            transform.localScale = damageInfo.Crit ? Vector3.one * 2f : Vector3.one;
+            _text.color = damageInfo.Crit ? Color.red : Color.white;
+            _text.text = damageInfo.Damage.ToString("0.00");
+        }
     }
 }
 

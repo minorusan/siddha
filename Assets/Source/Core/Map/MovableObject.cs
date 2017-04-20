@@ -122,7 +122,7 @@ namespace Core.Map
             while (true)
             {
                 _myScource.PlayOneShot(StepSound, 0.05f);
-                var speed = (1f - MovementSpeed * 10)
+                var speed = (1f - MovementSpeed * 10);
                 yield return new WaitForSeconds(speed);
             }
         }
@@ -197,4 +197,3 @@ namespace Core.Map
         #endregion
     }
 }
-

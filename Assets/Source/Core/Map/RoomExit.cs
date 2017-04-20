@@ -24,6 +24,7 @@ namespace Core.Map
 				return _bounds;
 			}
 		}
+        public bool ChunkConnector = false;
         public bool Editable;
 		public EExitSide ExitSide;
 		public EExitSide LinksWithSide;

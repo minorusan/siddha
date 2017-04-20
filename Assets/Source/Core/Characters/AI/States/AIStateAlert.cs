@@ -67,10 +67,6 @@ namespace Core.Characters.AI
             }
 
             var path = FindNewpath();
-            if (path.Nodes.Count <= 1)
-            {
-                PlayerBehaviour.CurrentPlayer.Kill();
-            }
 
             if (_masterBrain.MovableObject.ReachedDestination)
             {

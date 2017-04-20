@@ -43,10 +43,9 @@ namespace Core.Pathfinding.Algorithms
                 Node node = openSet[0];
                 for (int i = 1; i < openSet.Count; i++)
                 {
-                    if (openSet[i].FCost < node.FCost || openSet[i].FCost == node.FCost)
+                    if (openSet[i].FCost < node.FCost || openSet[i].FCost == node.FCost && openSet[i].HCost < node.HCost)
                     {
-                        if (openSet[i].HCost < node.HCost)
-                            node = openSet[i];
+                        node = openSet[i];
                     }
                 }
 
@@ -55,8 +54,7 @@ namespace Core.Pathfinding.Algorithms
 
                 if (node == targetNode)
                 {
-                    var t = RetracePath(startNode, targetNode);
-                    return t;
+                     return RetracePath(startNode, targetNode);
                 }
                 var neighbours = MapController.GetNeighbours(node);
 
@@ -84,8 +82,6 @@ namespace Core.Pathfinding.Algorithms
                             openSet.Add(neighbours[i]);
                     }
                 }
-
-
             }
 
             return new Path();

@@ -7,7 +7,7 @@ using UnityEditor;
 
 using System.Collections.Generic;
 using System.Linq;
-using System;
+
 using Core.Characters.Player;
 
 namespace Core.Map
@@ -159,7 +159,8 @@ namespace Core.Map
                 _nonWalkables[i].Disabled += MapController_Disabled;
                 foreach (var item in _currentCellsArray)
                 {
-                    if (_nonWalkables[i].Bounds.Contains(item.Position))
+                    var itemPosition = new Vector3(item.Position.x, item.Position.y, _nonWalkables[i].transform.position.z);
+                    if (_nonWalkables[i].Bounds.Contains(itemPosition))
                     {
                         item.CurrentCellType = Core.Map.ECellType.Blocked;
                     }
@@ -195,7 +196,7 @@ namespace Core.Map
             return node;
         }
 
-        public static int GetDistance(Node nodeA, Node nodeB)
+        public int GetDistance(Node nodeA, Node nodeB)
         {
             int dstX = Mathf.Abs(nodeA.GridPosition.J - nodeB.GridPosition.J);
             int dstY = Mathf.Abs(nodeA.GridPosition.I - nodeB.GridPosition.I);

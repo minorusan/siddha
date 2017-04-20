@@ -28,6 +28,7 @@ namespace Core.Interactivity.AI
         public float AlertTime = 5f;
         public Image SuspentionBar;
         public Transform WanderingPointsRoot;
+        public GameObject Target;
         public AudioClip AngerSound;
 
         [Header("Dialogue strings")]
@@ -65,6 +66,7 @@ namespace Core.Interactivity.AI
         protected override void Start()
         {
             base.Start();
+            Target = Resources.Load<GameObject>("Prefabs/Decorations/blood");
             PlayerCaught += OnCaught;
             _renderer = GetComponent<SpriteRenderer>();
             if (AngerSound == null)
@@ -144,7 +146,6 @@ namespace Core.Interactivity.AI
 
                 _searchTime = -1f;
                 Spotted();
-   
             }
         }
 
@@ -169,8 +170,11 @@ namespace Core.Interactivity.AI
         {
             if (collision.tag == "Player" && PlayerQuirks.Attacked)
             {
-                OnCaught();
-                PlayerBehaviour.CurrentPlayer.Kill();
+                if (Vector2.Distance(PlayerBehaviour.CurrentPlayer.transform.position, transform.position) < 1f)
+                {
+                    OnCaught();
+                    PlayerBehaviour.CurrentPlayer.Kill();
+                }
             }
         }
     }

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Utilities.UI;
@@ -7,7 +6,6 @@ using Core.Inventory;
 using System.Linq;
 using Core.Utilities;
 using Core.Characters.Player;
-using UnityEngine.Events;
 using Core.Interactivity.Combat;
 
 namespace Utils.UI
@@ -28,6 +26,7 @@ namespace Utils.UI
         public Button ActionButton;
         public Button DeleteButton;
         public Image DisplayImage;
+        public Button ActivateInventoryButton;
         public Text ItemName;
 
         #region Monobehaviour
@@ -118,6 +117,7 @@ namespace Utils.UI
         public void SetAProjectile()
         {
             var projectile = PlayerInventory.Instance.GetProjectiles().FirstOrDefault(p=>p.ItemReference.ItemID == _currentItem.ItemID);
+            ActivateInventoryButton.onClick.Invoke();
             ThrowController.Instance.SetProjectile(projectile);
         }
 
@@ -127,8 +127,8 @@ namespace Utils.UI
             PlayerInventory.Instance.RemoveItemFromInventory(trap.ItemID);
 
             BeginSettingTrapWithCallback();
-            _displayImage.gameObject.SetActive(false);
-            _descriptionText.gameObject.SetActive(false);
+
+            ActivateInventoryButton.onClick.Invoke();
 
             ActionButton.gameObject.SetActive(false);
             DeleteButton.gameObject.SetActive(false);
@@ -219,4 +219,3 @@ namespace Utils.UI
         #endregion
     }
 }
-

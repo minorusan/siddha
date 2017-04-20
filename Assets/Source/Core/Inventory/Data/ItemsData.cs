@@ -63,6 +63,7 @@ namespace Core.Inventory
 			_allItems.Add(new AItemBase("genericitem.id.nippers", "Nippers", EItemType.Generic));
 
             _allItems.Add(new StackableItemBase("projectile.id.rocks","Small rocks pile", 20));
+            _allItems.Add(new StackableItemBase("projectile.id.bottle", "Empty bottle", 10));
             InitialiseTraps();
 		}
 
@@ -96,10 +97,10 @@ namespace Core.Inventory
 			TrapAction action = (GameObject obj) =>
 			{
 				var blood = Resources.Load <GameObject>("Prefabs/Decorations/blood");
-				var instantiatedBlood = (GameObject)GameObject.Instantiate(blood, obj.transform);
-				instantiatedBlood.transform.localPosition = Vector3.zero;
-				obj.GetComponent <MovableObject>().enabled = false;
-				obj.GetComponent <ArtificialIntelligence>().enabled = false;
+				var instantiatedBlood = (GameObject)GameObject.Instantiate(blood);
+				instantiatedBlood.transform.position = obj.transform.position;
+				obj.GetComponent <MovableObject>().MovementSpeed *= 0.1f;
+                obj.GetComponent<NPCHealthHandler>().SubstractHealth(50);
 			};
 
 			_allItems.Add(new TrapItemBase("trapitem.id.basictrap", "Iron trap", 3f, action));

@@ -19,10 +19,20 @@ namespace Core.Map
         private Room[] _startRooms;
         private List<Room> _generatedRoomsList = new List<Room>();
 
+        private Room LastRoom
+        {
+            get
+            {
+                return _generatedRoomsList.Last();
+            }
+        }
+
         #endregion
 
         public int MaxRoomsCouns;
         public string ChunkName;
+
+        public ChunkCreator ConnectsWithChunk;
 
         public bool PlacePlayer;
 
@@ -52,6 +62,7 @@ namespace Core.Map
         {
             var firstRoom = Instantiate(_startRooms[Random.Range(0, _startRooms.Length)]);
             firstRoom.transform.parent = transform;
+
             firstRoom.transform.localPosition = Vector3.zero;
 
             firstRoom.gameObject.SetActive(true);

@@ -29,7 +29,7 @@ namespace Core.Inventory
 				AudioSource.PlayClipAtPoint (_blod, transform.position);
 				AudioSource.PlayClipAtPoint (pain, transform.position);
 				_selfTrap.TrapAction (col.gameObject);
-				gameObject.SetActive (false);
+                transform.parent.gameObject.SetActive(false);
 			}
 		}
 	}

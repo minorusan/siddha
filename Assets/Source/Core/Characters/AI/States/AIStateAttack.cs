@@ -26,8 +26,9 @@ namespace Core.Characters.AI
 		public AIStateAttack(ArtificialIntelligence brains) : base(brains)
 		{
 			State = EAIState.Attack;
-           
+            
 		    _guardBrains = (GuardBrains) brains;
+        
             _guardBrains.RanAway += GuardBrainsOnRanAway;
             DeathController.Death += OnDeath;
 		}
@@ -57,8 +58,8 @@ namespace Core.Characters.AI
 		public override void OnEnter()
 		{
 			base.OnEnter();
-
-			PlayerQuirks.Attacked = true;
+            ObjectPooling.PoolManager.Instance.CreatePool(_guardBrains.Target, 5);
+            PlayerQuirks.Attacked = true;
            
             _startPosition = _guardBrains.transform.position;
             _masterBrain.StatusText.text = _guardBrains.AttackStrings[Random.Range(0, _guardBrains.AttackStrings.Length)];
@@ -76,10 +77,6 @@ namespace Core.Characters.AI
 			if(IsPlayerReachable())
 			{
 				MoveToPlayer();
-                if (_masterBrain.MovableObject.CurrentPathLength < 1)
-                {
-                    PlayerBehaviour.CurrentPlayer.Kill();
-                }
 			}
 			else
 			{
@@ -93,16 +90,23 @@ namespace Core.Characters.AI
 		private void MoveToPlayer()
 		{
 			var suitableAttackPosition = MapController.GetNodeByPosition(_player.transform.position);
-		    if (suitableAttackPosition.CurrentCellType == ECellType.Blocked)
-		    {
-		        suitableAttackPosition =
-		            MapController.GetNeighbours(suitableAttackPosition).First(i => i.CurrentCellType == ECellType.Walkable);
-		    } 
+		      var  suitableAttackPositions =
+		            MapController.GetNeighbours(suitableAttackPosition).Where(ni => ni.CurrentCellType == ECellType.Walkable).ToArray();
 
-			_masterBrain.MovableObject.BeginMovementByPath(Pathfinder.FindPathToDestination(
-				_map,
-				_masterBrain.MovableObject.CurrentNode.Position,
-				suitableAttackPosition.Position));
+            var path = new Path();
+            int i = 0;
+            while (i < suitableAttackPositions.Length - 1 && path.Empty)
+            {
+                path = Pathfinder.FindPathToDestination(
+                _map,
+                _masterBrain.MovableObject.CurrentNode.Position,
+                suitableAttackPositions[i].Position);
+                i++;
+                ObjectPooling.PoolManager.Instance.ReuseObject(_guardBrains.Target, suitableAttackPositions[i].Position, Quaternion.identity);
+            }
+
+           
+            _masterBrain.MovableObject.BeginMovementByPath(path);
 		}
 
 		private bool IsPlayerReachable()
