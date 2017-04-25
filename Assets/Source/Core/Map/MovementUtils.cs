@@ -52,8 +52,9 @@ namespace Core.Map
         Busy
     }
 
-    public class Node
+    public class Node:IHeapItem<Node>
     {
+        private int _heapIndex;
         public int GCost;
         public int HCost;
 
@@ -67,11 +68,34 @@ namespace Core.Map
 
         public MapController Map { get; set; }
 
+        public int HeapIndex
+        {
+            get
+            {
+                return _heapIndex;
+            }
+
+            set
+            {
+                _heapIndex = value;
+            }
+        }
+
         public Node Parent;
         public ECellType CurrentCellType;
         public Vector3 Position;
         public IJ GridPosition;
         public bool Target;
+
+        public int CompareTo(Node other)
+        {
+            int compare = FCost.CompareTo(other.FCost);
+            if (compare == 0)
+            {
+                compare = HCost.CompareTo(other.HCost);
+            }
+            return -compare;
+        }
     }
 
     [Serializable]

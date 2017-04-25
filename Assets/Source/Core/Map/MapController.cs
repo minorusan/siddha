@@ -132,10 +132,10 @@ namespace Core.Map
 
                     var flooredKey = new IJ(Mathf.RoundToInt(currentPosition.x), Mathf.RoundToInt(currentPosition.y));
 
-                    if (!_nodesMap.ContainsKey(flooredKey) && !_globalNodesMap.ContainsKey(flooredKey))
+                    if (!_nodesMap.ContainsKey(flooredKey))
                     {
                         _nodesMap.Add(flooredKey, instantiated);
-                        _globalNodesMap.Add(flooredKey, instantiated);
+                     
                     }
                     instantiated.Map = this;
 
@@ -187,16 +187,16 @@ namespace Core.Map
 
         private static IJ el = new IJ(0, 0);
 
-        public static Node GetNodeByPosition(Vector2 position)
+        public Node GetNodeByPosition(Vector2 position)
         {
             el.I = Mathf.RoundToInt(position.x);
             el.J = Mathf.RoundToInt(position.y);
             Node node;
-            _globalNodesMap.TryGetValue(el, out node);
+            _nodesMap.TryGetValue(el, out node);
             return node;
         }
 
-        public int GetDistance(Node nodeA, Node nodeB)
+        public static int GetDistance(Node nodeA, Node nodeB)
         {
             int dstX = Mathf.Abs(nodeA.GridPosition.J - nodeB.GridPosition.J);
             int dstY = Mathf.Abs(nodeA.GridPosition.I - nodeB.GridPosition.I);
@@ -208,7 +208,7 @@ namespace Core.Map
 
         static Node[] _neighbours = new Node[8];
 
-        public static Node[] GetNeighbours(Node node)
+        public Node[] GetNeighbours(Node node)
         {
             if (node == null)
             {
@@ -223,7 +223,7 @@ namespace Core.Map
                     el.I = Mathf.RoundToInt(node.Position.x + x);
                     el.J = Mathf.RoundToInt(node.Position.y + y);
                     Node toReturn;
-                    _globalNodesMap.TryGetValue(el, out toReturn);
+                    _nodesMap.TryGetValue(el, out toReturn);
                     if (toReturn != null)
                     {
                         _neighbours[iterator] = toReturn;
@@ -241,9 +241,13 @@ namespace Core.Map
 
         public static MapController GetMap(Vector3 postion)
         {
+            if (_maps == null)
+            {
+                _maps = FindObjectsOfType<MapController>();
+            }
             foreach (var item in _maps)
             {
-                if (GetNodeByPosition(postion) != null)
+                if (item.GetNodeByPosition(postion) != null)
                 {
                     return item;
                 }
@@ -261,7 +265,7 @@ namespace Core.Map
         {
             foreach (var mapController in _maps)
             {
-                var node = GetNodeByPosition(PlayerBehaviour.CurrentPlayer.transform.position);
+                var node = mapController.GetNodeByPosition(PlayerBehaviour.CurrentPlayer.transform.position);
                 if (node != null)
                 {
                     return mapController;

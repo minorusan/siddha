@@ -22,7 +22,7 @@ namespace Core.Map.Pathfinding
                                                  EPathfindingAlgorithm algorithm = EPathfindingAlgorithm.AStar)
         {
             var pathfinderToUse = _currentAlgorithms[algorithm];
-            return pathfinderToUse.FindPathToDestination(currentNodeIndex, targetNodeIndex);
+            return pathfinderToUse.FindPathToDestination(currentNodeIndex, targetNodeIndex, map);
         }
     }
 }

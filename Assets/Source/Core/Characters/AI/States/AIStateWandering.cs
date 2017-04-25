@@ -57,7 +57,7 @@ namespace Core.Characters.AI
            
             if (_player != null && _player.isActiveAndEnabled)
 			{
-				var playerNode = MapController.GetNodeByPosition(_player.transform.position);
+				var playerNode = _masterBrain.MovableObject.Map.GetNodeByPosition(_player.transform.position);
 				_suspention = _suspention > 0f && playerNode != null ? 0.9f : 0f;
                 _masterBrain.AnimationController.CurrentState = Enemies.EAnimationState.EAnimationStateWalking;
 			   
@@ -95,7 +95,11 @@ namespace Core.Characters.AI
 
 		private void CheckLeaveStateConditions()
 		{
-			var playerNode = MapController.GetNodeByPosition(_player.transform.position);
+			var playerNode = _masterBrain.MovableObject.Map.GetNodeByPosition(_player.transform.position);
+            if (playerNode == null)
+            {
+                return;
+            }
             var close = Vector3.Distance(_masterBrain.transform.position, _player.transform.position) < _searchDistance;
 
             if (_suspention > 1f || (close && !PlayerQuirks.StoppedBreathing))

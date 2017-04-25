@@ -11,7 +11,7 @@ namespace Core.Map.Pathfinding
             get;
         }
 
-        Path FindPathToDestination(Vector3 currentNodeIndex, Vector3 targetNodeIndex);
+        Path FindPathToDestination(Vector3 currentNodeIndex, Vector3 targetNodeIndex, MapController map);
     }
 
     public enum EPathfindingAlgorithm

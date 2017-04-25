@@ -4,6 +4,7 @@ using Core.Map.Pathfinding;
 using System.Linq;
 using Core.Map;
 using UnityEngine;
+using System.Diagnostics;
 
 
 namespace Core.Pathfinding.Algorithms
@@ -28,35 +29,27 @@ namespace Core.Pathfinding.Algorithms
             _ignoredNodeTypes = new List<ECellType> { ECellType.Blocked, ECellType.Busy };
         }
 
-        public Path FindPathToDestination(Vector3 currentNodeIndex, Vector3 targetNodeIndex)
+        public Path FindPathToDestination(Vector3 currentNodeIndex, Vector3 targetNodeIndex, MapController map)
         {
-            Node startNode = MapController.GetNodeByPosition(currentNodeIndex);
-            Node targetNode = MapController.GetNodeByPosition(targetNodeIndex);
-
-            List<Node> openSet = new List<Node>();
+        
+            Node startNode = map.GetNodeByPosition(currentNodeIndex);
+            Node targetNode = map.GetNodeByPosition(targetNodeIndex);
+           
+            Heap<Node> openSet = new Heap<Node>(map.MapDimentions.I * map.MapDimentions.J);
             HashSet<Node> closedSet = new HashSet<Node>();
 
             openSet.Add(startNode);
             var iterator = 0;
             while (openSet.Count > 0)
             {
-                Node node = openSet[0];
-                for (int i = 1; i < openSet.Count; i++)
-                {
-                    if (openSet[i].FCost < node.FCost || openSet[i].FCost == node.FCost && openSet[i].HCost < node.HCost)
-                    {
-                        node = openSet[i];
-                    }
-                }
-
-                openSet.Remove(node);
+                Node node = openSet.RemoveFirst();
                 closedSet.Add(node);
 
                 if (node == targetNode)
                 {
                      return RetracePath(startNode, targetNode);
                 }
-                var neighbours = MapController.GetNeighbours(node);
+                var neighbours = map.GetNeighbours(node);
 
                 for (int i = 0; i < neighbours.Length; i++)
                 {
@@ -79,7 +72,13 @@ namespace Core.Pathfinding.Algorithms
                         neighbours[i].Parent = node;
                         iterator++;
                         if (!openSet.Contains(neighbours[i]))
+                        {
                             openSet.Add(neighbours[i]);
+                        }else
+                        {
+                            openSet.Update(neighbours[i]);
+                        }
+                            
                     }
                 }
             }

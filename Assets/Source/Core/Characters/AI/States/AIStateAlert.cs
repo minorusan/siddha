@@ -57,9 +57,9 @@ namespace Core.Characters.AI
         public override void UpdateState()
         {
             base.UpdateState();
-            var playerNode = MapController.GetNodeByPosition(_player.transform.position);
-
-            if (_timeInState <= 0)
+            var playerNode = _masterBrain.MovableObject.Map.GetNodeByPosition(_player.transform.position);
+          
+            if (_timeInState <= 0 || playerNode == null)
             {
                 _currentCondition = AIStateCondition.Done;
                 _pendingState = EAIState.Wandering;
@@ -77,7 +77,7 @@ namespace Core.Characters.AI
 
         private Path FindNewpath()
         {
-            var suitableAttackPosition = MapController.GetNodeByPosition(_player.transform.position);
+            var suitableAttackPosition = _masterBrain.MovableObject.Map.GetNodeByPosition(_player.transform.position);
             if (suitableAttackPosition == null)
             {
                 return null;
@@ -85,7 +85,7 @@ namespace Core.Characters.AI
             if (suitableAttackPosition.CurrentCellType == ECellType.Blocked)
             {
                 suitableAttackPosition =
-                    MapController.GetNeighbours(suitableAttackPosition).First(i => i.CurrentCellType == ECellType.Walkable);
+                    _masterBrain.MovableObject.Map.GetNeighbours(suitableAttackPosition).First(i => i.CurrentCellType == ECellType.Walkable);
             }
             return Pathfinder.FindPathToDestination(
                 _map,

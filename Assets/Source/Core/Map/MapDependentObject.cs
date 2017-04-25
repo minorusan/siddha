@@ -16,7 +16,7 @@ namespace Core.Map
 			{
 				if (_map == null)
 				{
-					GetOwnerMap ();
+				    GetOwnerMap ();
 				}
 
 				return _map;
@@ -43,17 +43,7 @@ namespace Core.Map
 
 		private void GetOwnerMap ()
 		{
-			var maps = MapController.GetMapsOnScene ();
-			for (int i = 0; i < maps.Length; i++)
-			{
-				var playerNode = MapController.GetNodeByPosition (transform.position);
-				if (playerNode != null && (_map == null || _map != maps [i]))
-				{
-					_map = maps [i];
-					_myPosition = MapController.GetNodeByPosition (transform.position);
-					return;
-				}
-			}
+            _map = MapController.GetMap(transform.position);
 		}
 	}
 

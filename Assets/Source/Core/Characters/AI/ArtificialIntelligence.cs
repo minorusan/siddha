@@ -43,6 +43,7 @@ namespace Core.Characters.AI
 
 		private void OnDisable ()
 		{
+            
 			_currentState.OnLeave ();
 		
 			_currentState = _availiableStates [_availiableStates.Keys.First ()];

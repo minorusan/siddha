@@ -21,14 +21,7 @@ namespace UI
             _text = GetComponentInChildren<Text>();
             _owner = transform.parent.GetComponentInParent<ArtificialIntelligence>();
         }
-        // Update is called once per frame
-        private void Update()
-        {
-            var active = MapController.GetNodeByPosition(PlayerBehaviour.CurrentPlayer.transform.position) !=
-                         null;
-            _image.enabled = active;
-            _text.enabled = active;
-        }
+       
 
         #endregion
     }

@@ -43,34 +43,36 @@ namespace Core.Map
         {
             if (collision.tag == "Player")
             {
+                
                 AudioSource.PlayClipAtPoint(_enter, collision.transform.position);
-                foreach (var dynamicLight in _lights)
-                {
-                    dynamicLight.enabled = true;
-                }
+             
 
                 _selfRenderer.enabled = false;
+
+                for (int i = 0; i < transform.parent.parent.childCount; i++)
+                {
+                    if (transform.parent.parent.GetChild(i).gameObject.name == "NPC")
+                    {
+                        transform.parent.parent.GetChild(i).gameObject.SetActive(true);
+                        break;
+                    }
+                }
             }
         }
 
-        private void OnTriggerStay2D(Collider2D collision)
-        {
-            if (collision.tag == "Player")
-            {
-               // PlayerBehaviour.CurrentPlayer.TurnOnLight(true);
-                //_dayNight.Block(true);
-            }
-        }
-        
         private void OnTriggerExit2D(Collider2D collision)
         {
             if (collision.tag == "Player")
             {
-               // _dayNight.Block(false);
+               
+                for (int i = 0; i < transform.parent.parent.childCount; i++)
+                {
+                    if (transform.parent.parent.GetChild(i).gameObject.name == "NPC")
+                    {
+                        transform.parent.parent.GetChild(i).gameObject.SetActive(false);
+                    }
+                }
 
-               // PlayerBehaviour.CurrentPlayer.TurnOnLight(false);
-             
-             
                 _selfRenderer.enabled = true;
             }
           }

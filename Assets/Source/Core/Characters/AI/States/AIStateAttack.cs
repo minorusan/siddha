@@ -89,9 +89,14 @@ namespace Core.Characters.AI
 
 		private void MoveToPlayer()
 		{
-			var suitableAttackPosition = MapController.GetNodeByPosition(_player.transform.position);
+			var suitableAttackPosition = _masterBrain.MovableObject.Map.GetNodeByPosition(_player.transform.position);
+
+            if (suitableAttackPosition == null)
+            {
+                return;
+            }
 		      var  suitableAttackPositions =
-		            MapController.GetNeighbours(suitableAttackPosition).Where(ni => ni.CurrentCellType == ECellType.Walkable).ToArray();
+                    _masterBrain.MovableObject.Map.GetNeighbours(suitableAttackPosition).Where(ni => ni.CurrentCellType == ECellType.Walkable).ToArray();
 
             var path = new Path();
             int i = 0;
@@ -111,7 +116,7 @@ namespace Core.Characters.AI
 
 		private bool IsPlayerReachable()
 		{
-		    var node = MapController.GetNodeByPosition(_player.transform.position);
+		    var node = _masterBrain.MovableObject.Map.GetNodeByPosition(_player.transform.position);
 
 		    return node != null && Vector2.Distance(_masterBrain.transform.position, _startPosition) < _guardBrains.ActiveDistance;
 		} 
