@@ -15,25 +15,23 @@ namespace Core.Characters.Player
 
         public void Kill()
         {
-            
-            SceneManager.LoadScene(0);
-            return;
+            SceneManager.LoadSceneAsync(0);
 
-            var minDeathChance = PlayerQuirks.GetCharactheristic(EPlayerCharachteristic.Empathy) +
-                PlayerQuirks.GetCharactheristic(EPlayerCharachteristic.Prowlness) +
-                PlayerQuirks.GetCharactheristic(EPlayerCharachteristic.Reflection);
+            //var minDeathChance = PlayerQuirks.GetCharactheristic(EPlayerCharachteristic.Empathy) +
+            //    PlayerQuirks.GetCharactheristic(EPlayerCharachteristic.Prowlness) +
+            //    PlayerQuirks.GetCharactheristic(EPlayerCharachteristic.Reflection);
 
-            if (UnityEngine.Random.Range(Mathf.Clamp(minDeathChance,0, 100), 100) > DeathPossibility)
-            {
-                // StartCoroutine(DeathEffect());
-                PlayerBehaviour.CurrentPlayer.transform.position = _latestCheckpoint.position;
+            //if (UnityEngine.Random.Range(Mathf.Clamp(minDeathChance,0, 100), 100) > DeathPossibility)
+            //{
+            //    // StartCoroutine(DeathEffect());
+            //    PlayerBehaviour.CurrentPlayer.transform.position = _latestCheckpoint.position;
 
-            }
-            else
-            {
-                SceneManager.LoadScene(0);
-            }
-            Death();
+            //}
+            //else
+            //{
+            //    SceneManager.LoadScene(0);
+            //}
+            //Death();
         }
 
         private void OnTriggerEnter2D(Collider2D collision)

@@ -28,6 +28,7 @@ namespace Utils.UI
         public Image DisplayImage;
         public Button ActivateInventoryButton;
         public Text ItemName;
+        public GameObject ActivateAnimation;
 
         #region Monobehaviour
 
@@ -89,6 +90,7 @@ namespace Utils.UI
                             }
                         }
                         ActionButton.gameObject.SetActive(true);
+                        ActivateAnimation.SetActive(true);
                         ActionButton.interactable = receipt.RequiredItems.Length <= requiredItemsCount;
                         break;
                     }
@@ -96,6 +98,7 @@ namespace Utils.UI
                     {
                         _actionButtonImage.sprite = ButtonImages[1];
                         ActionButton.gameObject.SetActive(true);
+                        ActivateAnimation.SetActive(true);
                         ActionButton.onClick.AddListener(delegate { SetATrap(); });
                         break;
                     }
@@ -103,6 +106,7 @@ namespace Utils.UI
                     {
                         _actionButtonImage.sprite = ButtonImages[2];
                         ActionButton.gameObject.SetActive(true);
+                        ActivateAnimation.SetActive(true);
                         ActionButton.onClick.AddListener(delegate { SetAProjectile(); });
                         break;
                     }

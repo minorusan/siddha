@@ -161,13 +161,13 @@ namespace Core.Map
                 return;
             }
 
-            var startDraw = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
-            var endFirst = new Vector3(_currentPath.Nodes[0].Position.x, _currentPath.Nodes[0].Position.y, _currentPath.Nodes[0].Position.z + 1);
+            var startDraw = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            var endFirst = new Vector3(_currentPath.Nodes[0].Position.x, _currentPath.Nodes[0].Position.y, _currentPath.Nodes[0].Position.z - 1);
             Debug.DrawLine(startDraw, endFirst, DebugColor);
             for (int i = 0; i < _currentPath.Nodes.Count - 1; i++)
             {
-                var start = new Vector3(_currentPath.Nodes[i].Position.x, _currentPath.Nodes[i].Position.y, _currentPath.Nodes[i].Position.z + 1);
-                var end = new Vector3(_currentPath.Nodes[i + 1].Position.x, _currentPath.Nodes[i + 1].Position.y, _currentPath.Nodes[i + 1].Position.z + 1);
+                var start = new Vector3(_currentPath.Nodes[i].Position.x, _currentPath.Nodes[i].Position.y, _currentPath.Nodes[i].Position.z - 1);
+                var end = new Vector3(_currentPath.Nodes[i + 1].Position.x, _currentPath.Nodes[i + 1].Position.y, _currentPath.Nodes[i + 1].Position.z - 1);
 
                 Debug.DrawLine(start, end, DebugColor);
             }

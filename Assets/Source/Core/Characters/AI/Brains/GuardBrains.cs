@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
 using Core.Characters.AI;
@@ -146,6 +145,10 @@ namespace Core.Interactivity.AI
 
                 _searchTime = -1f;
                 Spotted();
+                if (ThrowController.Instance.ThrowTarget == null)
+                {
+                    ThrowController.Instance.ThrowTarget = gameObject;
+                }
             }
         }
 

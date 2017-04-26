@@ -59,7 +59,7 @@ namespace Core.Interactivity.Combat
         {
             for (int i = 0; i < Projectiles.Length; i++)
             {
-                PoolManager.Instance.CreatePool(Projectiles[i].gameObject, 10);
+                PoolManager.Instance.CreatePool(Projectiles[i].gameObject, 5);
             }
           
             _targetHandler = new TargetHandler(this);

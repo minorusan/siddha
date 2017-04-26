@@ -64,7 +64,8 @@ namespace Core.Pathfinding.Algorithms
                         continue;
                     }
 
-                    int newCostToNeighbour = node.GCost + MapController.GetDistance(node, neighbours[i]);
+                    int unlikelyMultiplier = node.CurrentCellType == ECellType.Unlikely ? 10 : 0;
+                    int newCostToNeighbour = node.GCost + MapController.GetDistance(node, neighbours[i]) + unlikelyMultiplier;
                     if (newCostToNeighbour < neighbours[i].GCost || !openSet.Contains(neighbours[i]))
                     {
                         neighbours[i].GCost = newCostToNeighbour;

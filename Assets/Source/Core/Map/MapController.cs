@@ -81,16 +81,17 @@ namespace Core.Map
                             gizmoColor = Color.red;
                             break;
                         }
+                    case ECellType.Unlikely:
+                        {
+                            gizmoColor = Color.yellow;
+                            break;
+                        }
                     case ECellType.Walkable:
                         {
                             gizmoColor = Color.green;
                             break;
                         }
-                    case ECellType.Busy:
-                        {
-                            gizmoColor = Color.yellow;
-                            break;
-                        }
+             
                     default:
                         break;
                 }
@@ -160,10 +161,19 @@ namespace Core.Map
                 foreach (var item in _currentCellsArray)
                 {
                     var itemPosition = new Vector3(item.Position.x, item.Position.y, _nonWalkables[i].transform.position.z);
-                    if (_nonWalkables[i].Bounds.Contains(itemPosition))
+                    if (_nonWalkables[i].Bounds.OverlapPoint(itemPosition))
                     {
                         item.CurrentCellType = Core.Map.ECellType.Blocked;
+                        var neighbours = GetNeighbours(item);
+                        for (int j = 0; j < neighbours.Length; j++)
+                        {
+                            if (neighbours[j] != null && neighbours[j].CurrentCellType != ECellType.Blocked)
+                            {
+                                neighbours[j].CurrentCellType = ECellType.Unlikely;
+                            }
+                        }
                     }
+                   
                 }
             }
         }

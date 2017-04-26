@@ -47,7 +47,7 @@ namespace Core.Characters.AI
 
 	    public override void OnLeave()
 		{
-            _masterBrain.MovableObject.MovementSpeed *= 0.5f;
+          //  _masterBrain.MovableObject.MovementSpeed *= 0.5f;
             _masterBrain.StatusText.text = "Whatever..";
             if (PlayerBehaviour.CurrentPlayer != null)
 			{
@@ -65,7 +65,7 @@ namespace Core.Characters.AI
             _masterBrain.StatusText.text = _guardBrains.AttackStrings[Random.Range(0, _guardBrains.AttackStrings.Length)];
             _masterBrain.AnimationController.CurrentState = Enemies.EAnimationState.EAnimationStateAttack;
             _player = PlayerBehaviour.CurrentPlayer;
-		    _masterBrain.MovableObject.MovementSpeed *= 2f;
+		   // _masterBrain.MovableObject.MovementSpeed *= 2f;
 
             _masterBrain.AnimationController.CurrentState = Enemies.EAnimationState.EAnimationStateAttack;
             AudioSource.PlayClipAtPoint(_guardBrains.AngerSound, _masterBrain.transform.position, 1f);
@@ -96,7 +96,7 @@ namespace Core.Characters.AI
                 return;
             }
 		      var  suitableAttackPositions =
-                    _masterBrain.MovableObject.Map.GetNeighbours(suitableAttackPosition).Where(ni => ni.CurrentCellType == ECellType.Walkable).ToArray();
+                    _masterBrain.MovableObject.Map.GetNeighbours(suitableAttackPosition).Where(ni => ni.CurrentCellType != ECellType.Blocked).ToArray();
 
             var path = new Path();
             int i = 0;
@@ -107,7 +107,7 @@ namespace Core.Characters.AI
                 _masterBrain.MovableObject.CurrentNode.Position,
                 suitableAttackPositions[i].Position);
                 i++;
-                ObjectPooling.PoolManager.Instance.ReuseObject(_guardBrains.Target, suitableAttackPositions[i].Position, Quaternion.identity);
+                
             }
 
            

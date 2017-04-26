@@ -85,7 +85,7 @@ namespace Core.Characters.AI
             if (suitableAttackPosition.CurrentCellType == ECellType.Blocked)
             {
                 suitableAttackPosition =
-                    _masterBrain.MovableObject.Map.GetNeighbours(suitableAttackPosition).First(i => i.CurrentCellType == ECellType.Walkable);
+                    _masterBrain.MovableObject.Map.GetNeighbours(suitableAttackPosition).FirstOrDefault(i => i.CurrentCellType != ECellType.Blocked);
             }
             return Pathfinder.FindPathToDestination(
                 _map,

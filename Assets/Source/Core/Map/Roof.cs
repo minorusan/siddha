@@ -22,20 +22,9 @@ namespace Core.Map
 
         private void Start()
         {
-            _enter = Resources.Load<AudioClip>("Sounds/windowShowFX");
+            _enter = Resources.Load<AudioClip>("Sounds/swoosh");
             _dayNight = FindObjectOfType<DayNight>();
             _selfRenderer = GetComponent<Renderer>();
-            
-            _lights = transform.parent.parent.gameObject.GetComponentsInChildren<DynamicLight>();
-            if (DisableOnAwake)
-            {
-                foreach (var dynamicLight in _lights)
-                {
-                    dynamicLight.enabled = false;
-                }
-
-                _selfRenderer.enabled = true;
-            }
             
         }
 
@@ -43,9 +32,7 @@ namespace Core.Map
         {
             if (collision.tag == "Player")
             {
-                
-                AudioSource.PlayClipAtPoint(_enter, collision.transform.position);
-             
+                AudioSource.PlayClipAtPoint(_enter, Camera.main.transform.position);
 
                 _selfRenderer.enabled = false;
 
@@ -64,7 +51,6 @@ namespace Core.Map
         {
             if (collision.tag == "Player")
             {
-               
                 for (int i = 0; i < transform.parent.parent.childCount; i++)
                 {
                     if (transform.parent.parent.GetChild(i).gameObject.name == "NPC")

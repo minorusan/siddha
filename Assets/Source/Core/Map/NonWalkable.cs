@@ -12,11 +12,11 @@ namespace Core.Map
 
 		public event Action Disabled;
 
-		public Bounds Bounds
+		public Collider2D Bounds
 		{
 			get
 			{
-				return GetComponent<Collider2D>().bounds;
+				return GetComponent<Collider2D>();
 			}
 		}
 

@@ -49,6 +49,7 @@ namespace Core.Map
     {
         Walkable,
         Blocked,
+        Unlikely,
         Busy
     }
 
